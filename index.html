@@ -3,74 +3,130 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Plataforma de Microlearning - Pré-Vestibular</title>
+  <title>Plataforma Gamificada de Microlearning</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 text-gray-800 min-h-screen p-4 md:p-8">
-  <div class="max-w-4xl mx-auto space-y-8">
+<body class="bg-gray-900 text-gray-100 min-h-screen p-4 md:p-8">
+  
+  <div class="max-w-4xl mx-auto space-y-6">
     
-    <!-- Cabeçalho -->
-    <header class="text-center border-b pb-4">
-      <h1 class="text-3xl font-bold text-blue-700">Aula 1: Pré-Vestibular</h1>
-      <p class="text-gray-600">Aprenda em pequenos blocos interativos</p>
-    </header>
+    <!-- Painel de Gamificação / Status do Aluno -->
+    <div class="bg-gray-800 border border-gray-700 rounded-2xl p-4 md:p-6 shadow-xl flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <span class="text-xs font-bold uppercase tracking-wider text-blue-400">Progresso do Estudante</span>
+        <h1 class="text-2xl font-black text-white flex items-center gap-2">
+          ⚡ Nível <span id="player-level" class="text-yellow-400">1</span>
+        </h1>
+      </div>
+
+      <!-- Métricas Gamificadas -->
+      <div class="flex items-center gap-6">
+        <div class="text-center">
+          <p class="text-xs text-gray-400">XP Total</p>
+          <p id="player-xp" class="text-xl font-bold text-green-400">0 XP</p>
+        </div>
+        <div class="text-center">
+          <p class="text-xs text-gray-400">Ofensiva</p>
+          <p id="player-streak" class="text-xl font-bold text-orange-500">🔥 1 Dia</p>
+        </div>
+      </div>
+
+      <!-- Barra de Progresso da Aula -->
+      <div class="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
+        <div id="lesson-progress-bar" class="bg-gradient-to-r from-blue-500 to-green-400 h-full w-0 transition-all duration-500"></div>
+      </div>
+    </div>
+
+    <!-- Seletor de Aulas -->
+    <div class="flex items-center justify-between bg-gray-800 p-4 rounded-xl border border-gray-700">
+      <label for="lesson-select" class="font-semibold text-gray-300">Escolha a Aula:</label>
+      <select id="lesson-select" onchange="carregarAula(this.value)" class="bg-gray-900 border border-gray-600 rounded-lg px-4 py-2 text-white font-medium focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <option value="aula1.json">Aula 1: Fundamentos do Vestibular</option>
+        <!-- Futuras aulas serão adicionadas aqui -->
+      </select>
+    </div>
 
     <!-- Contentor do Vídeo -->
-    <div class="aspect-video w-full rounded-xl overflow-hidden shadow-lg bg-black">
+    <div class="aspect-video w-full rounded-xl overflow-hidden shadow-2xl bg-black border border-gray-800">
       <iframe id="youtube-player" class="w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
     </div>
 
-    <!-- Contentor dos Fragmentos da Aula -->
+    <!-- Contentor dos Fragmentos / Quizzes -->
     <div id="fragmentos-container" class="space-y-6">
-      <p class="text-center text-gray-500">A carregar conteúdo da aula...</p>
+      <p class="text-center text-gray-400 animate-pulse">A carregar missão de estudo...</p>
     </div>
 
   </div>
 
   <script>
-    // Procura o ficheiro JSON armazenado no GitHub
-    fetch('aula1.json')
-      .then(response => response.json())
-      .then(data => {
-        // Carrega o vídeo do YouTube
-        document.getElementById('youtube-player').src = `https://www.youtube.com/embed/${data.video_id}`;
-        
-        const container = document.getElementById('fragmentos-container');
-        container.innerHTML = '';
+    // Sistema de Gamificação (LocalStorage)
+    let state = JSON.parse(localStorage.getItem('microlearning_state')) || {
+      xp: 0,
+      level: 1,
+      streak: 1,
+      aulasConcluidas: {}
+    };
 
-        // Renderiza cada fragmento pedagógico
-        data.fragmentos.forEach((frag, index) => {
-          const card = document.createElement('div');
-          card.className = "bg-white p-6 rounded-xl shadow-md border border-gray-200 space-y-4";
+    function atualizarInterfaceGamificada() {
+      state.level = Math.floor(state.xp / 100) + 1;
+      document.getElementById('player-xp').innerText = `${state.xp} XP`;
+      document.getElementById('player-level').innerText = state.level;
+      document.getElementById('player-streak').innerText = `🔥 ${state.streak} Dia${state.streak > 1 ? 's' : ''}`;
+      localStorage.setItem('microlearning_state', JSON.stringify(state));
+    }
+
+    let totalFragmentos = 0;
+    let acertosAulaAtual = 0;
+
+    function carregarAula(arquivoJson) {
+      acertosAulaAtual = 0;
+      document.getElementById('lesson-progress-bar').style.width = '0%';
+      
+      fetch(arquivoJson)
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('youtube-player').src = `https://www.youtube.com/embed/${data.video_id}`;
           
-          let opcoesHTML = frag.opcoes.map((opt, i) => `
-            <button onclick="verificarResposta(${index}, ${i}, ${frag.resposta_correta})" 
-                    class="opcao-btn-${index} w-full text-left p-3 rounded-lg border hover:bg-blue-50 transition border-gray-300">
-              ${opt}
-            </button>
-          `).join('');
+          const container = document.getElementById('fragmentos-container');
+          container.innerHTML = '';
+          totalFragmentos = data.fragmentos.length;
 
-          card.innerHTML = `
-            <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2.5 py-0.5 rounded font-semibold">
-              Parte ${frag.id}
-            </span>
-            <h2 class="text-xl font-bold text-gray-900">${frag.titulo}</h2>
-            <p class="text-gray-700 leading-relaxed">${frag.explicacao}</p>
+          data.fragmentos.forEach((frag, index) => {
+            const card = document.createElement('div');
+            card.className = "bg-gray-800 p-6 rounded-2xl border border-gray-700 shadow-lg space-y-4";
             
-            <div class="pt-4 border-t mt-4">
-              <p class="font-semibold text-gray-800 mb-3">❓ ${frag.pergunta}</p>
-              <div class="space-y-2">${opcoesHTML}</div>
-              <div id="feedback-${index}" class="hidden mt-3 p-3 rounded-lg text-sm font-medium"></div>
-            </div>
-          `;
-          
-          container.appendChild(card);
+            let opcoesHTML = frag.opcoes.map((opt, i) => `
+              <button onclick="verificarResposta(${index}, ${i}, ${frag.resposta_correta})" 
+                      class="opcao-btn-${index} w-full text-left p-3.5 rounded-xl border border-gray-600 hover:bg-gray-700 hover:border-blue-400 transition-all font-medium text-gray-200">
+                ${opt}
+              </button>
+            `).join('');
+
+            card.innerHTML = `
+              <div class="flex items-center justify-between">
+                <span class="bg-blue-900/60 text-blue-300 border border-blue-500/30 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider">
+                  Bloco ${frag.id}
+                </span>
+                <span class="text-xs text-yellow-400 font-semibold">+50 XP por acerto</span>
+              </div>
+              <h2 class="text-xl font-bold text-white">${frag.titulo}</h2>
+              <p class="text-gray-300 leading-relaxed text-sm md:text-base">${frag.explicacao}</p>
+              
+              <div class="pt-4 border-t border-gray-700 mt-4">
+                <p class="font-semibold text-gray-100 mb-3">❓ ${frag.pergunta}</p>
+                <div class="space-y-2.5">${opcoesHTML}</div>
+                <div id="feedback-${index}" class="hidden mt-4 p-4 rounded-xl text-sm font-bold flex items-center justify-between"></div>
+              </div>
+            `;
+            
+            container.appendChild(card);
+          });
+        })
+        .catch(err => {
+          document.getElementById('fragmentos-container').innerHTML = 
+            '<p class="text-red-400 text-center font-bold">Erro ao carregar o conteúdo da aula.</p>';
         });
-      })
-      .catch(err => {
-        document.getElementById('fragmentos-container').innerHTML = 
-          '<p class="text-red-500 text-center">Erro ao carregar o ficheiro aula1.json do repositório.</p>';
-      });
+    }
 
     function verificarResposta(fragIndex, opcaoSelecionada, correta) {
       const feedback = document.getElementById(`feedback-${fragIndex}`);
@@ -79,21 +135,36 @@
       botoes.forEach((btn, i) => {
         btn.disabled = true;
         if (i === correta) {
-          btn.classList.add('bg-green-100', 'border-green-500', 'font-semibold');
+          btn.classList.add('bg-green-900/50', 'border-green-500', 'text-green-300', 'font-bold');
         } else if (i === opcaoSelecionada) {
-          btn.classList.add('bg-red-100', 'border-red-500');
+          btn.classList.add('bg-red-900/50', 'border-red-500', 'text-red-300');
+        } else {
+          btn.classList.add('opacity-40');
         }
       });
 
       feedback.classList.remove('hidden');
       if (opcaoSelecionada === correta) {
-        feedback.className = "mt-3 p-3 rounded-lg text-sm font-medium bg-green-100 text-green-800 border border-green-200";
-        feedback.innerText = "✨ Correto! Parabéns!";
+        feedback.className = "mt-4 p-4 rounded-xl text-sm font-bold bg-green-900/40 text-green-300 border border-green-500/40";
+        feedback.innerHTML = "<span>🎉 Resposta Correta! +50 XP</span>";
+        
+        // Concede XP e atualiza progresso
+        state.xp += 50;
+        acertosAulaAtual++;
+        atualizarInterfaceGamificada();
       } else {
-        feedback.className = "mt-3 p-3 rounded-lg text-sm font-medium bg-red-100 text-red-800 border border-red-200";
-        feedback.innerText = "❌ Incorreto. Reveja o trecho explicativo acima.";
+        feedback.className = "mt-4 p-4 rounded-xl text-sm font-bold bg-red-900/40 text-red-300 border border-red-500/40";
+        feedback.innerText = "❌ Resposta incorreta. Revise o trecho acima.";
       }
+
+      // Atualiza barra de progresso da aula
+      const progresso = (acertosAulaAtual / totalFragmentos) * 100;
+      document.getElementById('lesson-progress-bar').style.width = `${progresso}%`;
     }
+
+    // Inicialização
+    atualizarInterfaceGamificada();
+    carregarAula('aula1.json');
   </script>
 </body>
 </html>
