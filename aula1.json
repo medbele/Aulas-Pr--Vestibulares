@@ -1,0 +1,47 @@
+{
+  "video_id": "dQw4w9WgXcQ",
+  "fragmentos": [
+    {
+      "id": 1,
+      "titulo": "Mapeamento dos Conteúdos Essenciais",
+      "explicacao": "Na preparação para o vestibular, é crucial priorizar os temas que possuem maior incidência e relevância conceitual nas provas. Compreender a estrutura geral do edital permite estabelecer um cronograma eficiente e focado nos tópicos que realmente constroem a base das grandes bancas avaliadoras.\n\nEssa visão panorâmica evita o desperdício de tempo com minúcias irrelevantes e garante que o estudante construa um alicerce sólido nas matérias fundamentais.",
+      "pergunta": "Qual é o principal benefício pedagógico de identificar os tópicos essenciais no início dos estudos?",
+      "opcoes": [
+        "A) Otimizar o tempo de estudo concentrando esforços nos temas de maior recorrência e relevância.",
+        "B) Dispensar a necessidade de realizar revisões periódicas ao longo do ano letivo.",
+        "C) Garantir pontuação máxima em disciplinas específicas sem necessidade de treino prático.",
+        "D) Substituir a leitura atenta de enunciados pela aplicação direta de fórmulas decoradas."
+      ],
+      "resposta_correta": 0,
+      "explicacao_resposta": "A identificação e foco nos tópicos essenciais otimizam a rotina de estudos, permitindo que o candidato priorize os conteúdos com maior taxa de incidência nas provas."
+    },
+    {
+      "id": 2,
+      "titulo": "Compreensão e Domínio Teórico",
+      "explicacao": "O domínio conceitual é o núcleo que sustenta o raciocínio crítico necessário para resolver questões contextualizadas e interdisciplinares. Longe de ser mera memorização, o estudo teórico visa compreender os mecanismos, as causas e os efeitos dos fenômenos estudados.\n\nAo dominar a teoria, o vestibulando adquire a capacidade de articular diferentes áreas do conhecimento e decodificar dados presentes em gráficos, tabelas e textos analíticos.",
+      "pergunta": "Por que a compreensão teórica aprofundada é indispensável nos exames modernos como o ENEM?",
+      "opcoes": [
+        "A) Porque as provas atuais avaliam apenas definições literais e nomenclaturas decoradas.",
+        "B) Porque permite interpretar enunciados complexos e articular conceitos em situações inéditas.",
+        "C) Porque anula os erros causados por desatenção na interpretação de texto.",
+        "D) Porque torna desnecessária a prática com simulados e provas anteriores."
+      ],
+      "resposta_correta": 1,
+      "explicacao_resposta": "Os vestibulares contemporâneos exigem aplicação prática e contextualizada de conceitos; portanto, o domínio teórico profundo permite interpretar e resolver problemas complexos com autonomia."
+    },
+    {
+      "id": 3,
+      "titulo": "Prática e Resolução de Exercícios",
+      "explicacao": "A prática sistemática de resolução de questões é a etapa em que o conhecimento passivo se transforma em habilidade ativa. É no treino prático que o estudante se familiariza com o estilo da banca, desenvolve velocidade de resolução e aprende a gerenciar o tempo de prova.\n\nAlém disso, os exercícios funcionam como uma ferramenta de autoavaliação contínua, evidenciando lacunas conceituais e pontos que demandam revisão imediata.",
+      "pergunta": "Em relação à rotina do vestibulando, qual função primordial é desempenhada pela resolução regular de questões?",
+      "opcoes": [
+        "A) Diagnosticar lacunas conceituais e aprimorar a gestão do tempo de resolução da prova.",
+        "B) Memorizar gabaritos na expectativa de repetição idêntica de questões no dia do exame.",
+        "C) Substituir completamente o contato prévio com o material teórico de referência.",
+        "D) Limitar a análise aos erros conceituais sem avaliar a velocidade de resposta."
+      ],
+      "resposta_correta": 0,
+      "explicacao_resposta": "Resolver exercícios atua diretamente como ferramenta diagnóstica de aprendizagem e desenvolve o gerenciamento de tempo indispensável para o dia da prova."
+    }
+  ]
+}
