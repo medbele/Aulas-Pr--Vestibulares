@@ -3,24 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MedVest - Módulos de Estudo & Casos Clínicos</title>
+  <title>ApexMed - Plataforma de Estudo Avançado em Medicina</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- Configuração da Paleta Médica -->
+  <!-- Configuração da Paleta Visual Própria (ApexMed) -->
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           colors: {
-            med: {
-              100: '#F3FBFF',
-              200: '#CDEFFF',
-              300: '#7AD9FF',
-              400: '#1AA3D9',
-              500: '#123B4A',
-              900: '#0B242E',
+            apex: {
+              50: '#F0FDF4',
+              100: '#DCFCE7',
+              300: '#86EFAC',
+              400: '#4ADE80',
+              500: '#22C55E',
+              600: '#16A34A',
+              800: '#064E3B',
+              900: '#022C22',
+              950: '#011A14',
+              surface: '#0A2820',
+              card: '#0D382D',
+              border: '#134E3F',
+              accent: '#38BDF8'
             }
           }
         }
@@ -29,149 +37,277 @@
   </script>
   
   <style>
-    select optgroup { background-color: #123B4A; color: #7AD9FF; font-weight: bold; }
-    select option { background-color: #0B242E; color: #F3FBFF; }
+    select optgroup { background-color: #0D382D; color: #86EFAC; font-weight: bold; }
+    select option { background-color: #0A2820; color: #F0FDF4; }
   </style>
 </head>
-<body class="bg-med-900 text-med-100 min-h-screen flex flex-col font-sans selection:bg-med-400 selection:text-med-100">
+<body class="bg-apex-950 text-apex-100 min-h-screen flex flex-col font-sans selection:bg-apex-400 selection:text-apex-950">
 
-  <!-- Cabeçalho -->
-  <header class="border-b border-med-400/30 bg-med-500/90 backdrop-blur sticky top-0 z-50 px-4 py-3 shadow-lg">
-    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+  <!-- Cabeçalho Principal -->
+  <header class="border-b border-apex-border bg-apex-surface/90 backdrop-blur sticky top-0 z-50 px-4 py-3 shadow-xl">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
       <div class="flex items-center gap-3">
-        <div class="p-2 bg-med-400/20 border border-med-300/40 rounded-xl text-med-300 text-xl shadow-inner">
-          🩺
+        <div class="p-2.5 bg-apex-400/20 border border-apex-300/40 rounded-2xl text-apex-300 text-xl shadow-inner">
+          ⚡
         </div>
         <div>
-          <h1 class="font-bold text-lg md:text-xl text-med-100 flex items-center gap-2">
-            MedVest <span class="text-xs px-2 py-0.5 rounded-full bg-med-400/30 border border-med-300/50 text-med-200">UFPR / Medicina</span>
+          <h1 class="font-black text-lg md:text-xl text-apex-50 tracking-wide flex items-center gap-2">
+            APEX<span class="text-apex-400">MED</span> 
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-apex-400/20 border border-apex-300/30 text-apex-300 uppercase tracking-wider font-semibold">Ciclo Clínico</span>
           </h1>
-          <p class="text-xs text-med-200/80">Estudo Fragmentado por Balões de Leitura</p>
+          <p class="text-xs text-apex-300/80">Plataforma Inteligente de Aprendizagem Ativa</p>
         </div>
       </div>
 
-      <!-- Gamificação -->
-      <div class="flex items-center gap-4 bg-med-900/90 px-4 py-2 rounded-xl border border-med-400/30 text-xs md:text-sm">
-        <div class="flex items-center gap-1.5">
-          <span>🩺</span>
-          <span id="user-level" class="font-semibold text-med-300">Interno de Medicina</span>
+      <!-- Barra de Abas de Navegação -->
+      <nav class="flex items-center gap-1 bg-apex-900 p-1 rounded-xl border border-apex-border overflow-x-auto max-w-full">
+        <button onclick="mudarAba('dashboard')" id="nav-dashboard" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-apex-500 text-apex-950 flex items-center gap-1.5 shadow">
+          📊 Início
+        </button>
+        <button onclick="mudarAba('aulas')" id="nav-aulas" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-apex-300 hover:bg-apex-card flex items-center gap-1.5">
+          📚 Aulas
+        </button>
+        <button onclick="mudarAba('erros')" id="nav-erros" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-apex-300 hover:bg-apex-card flex items-center gap-1.5">
+          ⚠️ Caderno de Erros <span id="badge-erros" class="bg-red-500 text-white px-1.5 py-0.2 rounded-full text-[10px]">0</span>
+        </button>
+        <button onclick="mudarAba('gerador')" id="nav-gerador" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-apex-300 hover:bg-apex-card flex items-center gap-1.5">
+          🤖 Gerador IA
+        </button>
+      </nav>
+
+      <!-- Gamificação / Estatísticas do Aluno -->
+      <div class="flex items-center gap-3 bg-apex-900 px-4 py-2 rounded-xl border border-apex-border text-xs">
+        <div class="flex items-center gap-1">
+          <span>🔥</span>
+          <span id="user-streak" class="font-bold text-amber-400">0 dias</span>
         </div>
-        <div class="h-4 w-px bg-med-400/30"></div>
-        <div class="flex items-center gap-1.5">
+        <div class="h-4 w-px bg-apex-border"></div>
+        <div class="flex items-center gap-1">
           <span>⚡</span>
-          <span id="user-xp" class="font-bold text-med-200">0 XP</span>
+          <span id="user-xp" class="font-bold text-apex-300">0 XP</span>
+        </div>
+        <div class="h-4 w-px bg-apex-border"></div>
+        <div class="flex items-center gap-1">
+          <span>🪙</span>
+          <span id="user-coins" class="font-bold text-yellow-300">0</span>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- Conteúdo Principal -->
-  <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 space-y-6">
+  <!-- Conteúdo Principal Dinâmico -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 space-y-6">
 
-    <!-- Seletor de Aulas -->
-    <div class="flex flex-col gap-2 bg-med-500 p-4 rounded-xl border border-med-400/40 shadow-xl">
-      <label for="lesson-select" class="font-semibold text-med-200 flex items-center gap-2 text-sm md:text-base">
-        📚 Selecionar Disciplina e Módulo:
-      </label>
-      <select id="lesson-select" onchange="carregarAula(this.value)" class="w-full bg-med-900 border border-med-400/60 rounded-lg px-4 py-3 text-med-100 font-medium focus:outline-none focus:ring-2 focus:ring-med-300 transition-all cursor-pointer">
-        <option value="">A carregar sumário...</option>
-      </select>
-    </div>
-
-    <!-- Título do Módulo e Vídeo -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div class="lg:col-span-2 space-y-4">
-        <div class="bg-med-500 border border-med-400/30 rounded-xl overflow-hidden shadow-2xl aspect-video relative">
-          <iframe id="video-player" class="w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
+    <!-- ABA: DASHBOARD / INÍCIO -->
+    <section id="tab-dashboard" class="space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-apex-surface p-5 rounded-2xl border border-apex-border shadow-lg flex items-center justify-between">
+          <div>
+            <p class="text-xs text-apex-300 font-semibold uppercase tracking-wider">Sequência de Estudos</p>
+            <h2 id="dash-streak" class="text-3xl font-black text-apex-50 mt-1">0 <span class="text-sm font-normal text-apex-300">dias seguidos</span></h2>
+          </div>
+          <div class="p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl text-2xl">🔥</div>
         </div>
-        <div class="bg-med-500 p-4 rounded-xl border border-med-400/30">
-          <h2 id="lesson-title" class="text-lg font-bold text-med-100">A carregar...</h2>
-          <p id="lesson-desc" class="text-sm text-med-200/90 mt-1"></p>
+        <div class="bg-apex-surface p-5 rounded-2xl border border-apex-border shadow-lg flex items-center justify-between">
+          <div>
+            <p class="text-xs text-apex-300 font-semibold uppercase tracking-wider">Blocos Dominados</p>
+            <h2 id="dash-baloes" class="text-3xl font-black text-apex-50 mt-1">0 <span class="text-sm font-normal text-apex-300">concluídos</span></h2>
+          </div>
+          <div class="p-3 bg-apex-400/10 border border-apex-300/30 rounded-xl text-2xl">💬</div>
         </div>
-      </div>
-
-      <!-- Secção de Balões de Leitura -->
-      <div class="space-y-4">
-        <h3 class="font-bold text-med-300 text-sm flex items-center gap-2">
-          💬 BALÕES DE LEITURA (CLIQUE PARA ABRIR):
-        </h3>
-        
-        <div id="balloons-list" class="grid grid-cols-1 gap-2">
-          <p class="text-xs text-med-200">Selecione uma aula acima para carregar os balões.</p>
+        <div class="bg-apex-surface p-5 rounded-2xl border border-apex-border shadow-lg flex items-center justify-between">
+          <div>
+            <p class="text-xs text-apex-300 font-semibold uppercase tracking-wider">Erros em Revisão</p>
+            <h2 id="dash-erros" class="text-3xl font-black text-apex-50 mt-1">0 <span class="text-sm font-normal text-apex-300">pendentes</span></h2>
+          </div>
+          <div class="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-2xl">⚠️️</div>
         </div>
       </div>
-    </div>
 
-    <!-- Área de Exibição do Balão Ativo -->
-    <div id="active-balloon-container" class="hidden bg-med-500 p-6 rounded-xl border-2 border-med-300/50 space-y-6 shadow-2xl transition-all">
-      <div class="border-b border-med-400/30 pb-3 flex justify-between items-center">
-        <h3 id="balloon-title" class="text-lg font-bold text-med-300 flex items-center gap-2"></h3>
-        <span class="text-xs bg-med-400/20 text-med-200 px-3 py-1 rounded-full border border-med-300/30">Fragmento de Leitura</span>
-      </div>
-
-      <div id="balloon-text" class="text-sm md:text-base text-med-100 leading-relaxed bg-med-900/60 p-4 rounded-lg border border-med-400/20"></div>
-
-      <div class="space-y-4 bg-med-900 p-5 rounded-xl border border-med-400/30">
-        <p id="balloon-question" class="font-semibold text-sm md:text-base text-med-300"></p>
-        <div id="balloon-options" class="space-y-2"></div>
-        
-        <button id="btn-submit-balloon" onclick="validarRespostaBalao()" class="w-full py-2.5 bg-gradient-to-r from-med-400 to-med-300 hover:brightness-110 font-bold rounded-lg text-med-900 shadow-lg transition-all text-sm mt-2">
-          🩺 Confirmar Diagnóstico
+      <div class="bg-apex-surface p-6 rounded-2xl border border-apex-border shadow-xl space-y-4">
+        <h3 class="font-bold text-lg text-apex-100 flex items-center gap-2">🚀 Bem-vindo ao seu Ambiente Clínico</h3>
+        <p class="text-sm text-apex-300 leading-relaxed">
+          Selecione a aba <strong class="text-apex-100">Aulas</strong> para iniciar os seus estudos fragmentados por balões de leitura com feedback analítico, ou utilize o <strong class="text-apex-100">Gerador IA</strong> para transformar transcrições brutas em módulos interativos instantaneamente.
+        </p>
+        <button onclick="mudarAba('aulas')" class="px-5 py-2.5 bg-apex-500 hover:bg-apex-600 text-apex-950 font-bold rounded-xl transition-all shadow-lg text-sm">
+          Ir para Módulos de Estudo ➔
         </button>
       </div>
+    </section>
 
-      <div id="balloon-feedback" class="hidden"></div>
-    </div>
+    <!-- ABA: AULAS E BALÕES DE LEITURA -->
+    <section id="tab-aulas" class="hidden space-y-6">
+      <div class="flex flex-col gap-2 bg-apex-surface p-4 rounded-2xl border border-apex-border shadow-xl">
+        <label for="lesson-select" class="font-semibold text-apex-200 flex items-center gap-2 text-sm">
+          📚 Selecionar Disciplina e Módulo:
+        </label>
+        <select id="lesson-select" onchange="carregarAula(this.value)" class="w-full bg-apex-900 border border-apex-border rounded-xl px-4 py-3 text-apex-100 font-medium focus:outline-none focus:ring-2 focus:ring-apex-400 transition-all cursor-pointer">
+          <option value="">A carregar sumário...</option>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 space-y-4">
+          <div class="bg-apex-surface border border-apex-border rounded-2xl overflow-hidden shadow-2xl aspect-video relative">
+            <iframe id="video-player" class="w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
+          </div>
+          <div class="bg-apex-surface p-5 rounded-2xl border border-apex-border">
+            <h2 id="lesson-title" class="text-lg font-bold text-apex-50">Selecione uma aula</h2>
+            <p id="lesson-desc" class="text-sm text-apex-300 mt-1"></p>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <h3 class="font-bold text-apex-300 text-xs tracking-wider uppercase flex items-center gap-2">
+            💬 Balões de Leitura Ativos:
+          </h3>
+          <div id="balloons-list" class="grid grid-cols-1 gap-2.5">
+            <p class="text-xs text-apex-300">Nenhuma aula selecionada.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Container do Balão Ativo -->
+      <div id="active-balloon-container" class="hidden bg-apex-surface p-6 rounded-2xl border-2 border-apex-300/40 space-y-6 shadow-2xl transition-all">
+        <div class="border-b border-apex-border pb-3 flex justify-between items-center">
+          <h3 id="balloon-title" class="text-lg font-bold text-apex-300 flex items-center gap-2"></h3>
+          <span class="text-xs bg-apex-400/20 text-apex-300 px-3 py-1 rounded-full border border-apex-300/30 font-medium">Bloco de Raciocínio Clínico</span>
+        </div>
+
+        <div id="balloon-text" class="text-sm md:text-base text-apex-100 leading-relaxed bg-apex-900/80 p-5 rounded-xl border border-apex-border"></div>
+
+        <div class="space-y-4 bg-apex-900 p-5 rounded-xl border border-apex-border">
+          <p id="balloon-question" class="font-semibold text-sm md:text-base text-apex-300"></p>
+          <div id="balloon-options" class="space-y-2"></div>
+          
+          <button id="btn-submit-balloon" onclick="validarRespostaBalao()" class="w-full py-3 bg-apex-500 hover:bg-apex-600 font-bold rounded-xl text-apex-950 shadow-lg transition-all text-sm mt-3">
+            🩺 Submeter Diagnóstico
+          </button>
+        </div>
+
+        <div id="balloon-feedback" class="hidden"></div>
+      </div>
+    </section>
+
+    <!-- ABA: CADERNO DE ERROS -->
+    <section id="tab-erros" class="hidden space-y-6">
+      <div class="bg-apex-surface p-6 rounded-2xl border border-apex-border shadow-xl space-y-3">
+        <h2 class="text-lg font-bold text-apex-50 flex items-center gap-2">⚠️️ Caderno de Erros e Revisão Ativa</h2>
+        <p class="text-sm text-apex-300">Questões respondidas incorretamente nos balões acumulam-se aqui para repetição espaçada e fixação de conteúdo.</p>
+      </div>
+
+      <div id="erros-list" class="space-y-4">
+        <p class="text-sm text-apex-300 text-center py-10">Parabéns! Nenhum erro registado no momento.</p>
+      </div>
+    </section>
+
+    <!-- ABA: GERADOR AUTOMÁTICO VIA IA -->
+    <section id="tab-gerador" class="hidden space-y-6">
+      <div class="bg-apex-surface p-6 rounded-2xl border border-apex-border shadow-xl space-y-4">
+        <h2 class="text-lg font-bold text-apex-50 flex items-center gap-2">🤖 Gerador Automático de Módulos</h2>
+        <p class="text-sm text-apex-300">Cole a transcrição de um áudio, resumo de aula ou trecho de livro abaixo. O sistema estruturará os balões de leitura e as questões de fixação instantaneamente.</p>
+        
+        <div class="space-y-3">
+          <input type="text" id="gen-titulo" placeholder="Título do Módulo (ex: Fisiologia Renal - Filtração Glomerular)" class="w-full bg-apex-900 border border-apex-border rounded-xl px-4 py-3 text-apex-100 text-sm focus:outline-none focus:ring-2 focus:ring-apex-400">
+          <textarea id="gen-texto" rows="6" placeholder="Cole aqui o texto ou transcrição bruta..." class="w-full bg-apex-900 border border-apex-border rounded-xl p-4 text-apex-100 text-sm focus:outline-none focus:ring-2 focus:ring-apex-400"></textarea>
+          <button onclick="gerarModuloInstantaneo()" class="px-6 py-3 bg-apex-500 hover:bg-apex-600 font-bold rounded-xl text-apex-950 transition-all shadow-lg text-sm">
+            ✨ Gerar Módulo e Questões Automaticamente
+          </button>
+        </div>
+      </div>
+    </section>
 
   </main>
 
-  <footer class="border-t border-med-500 bg-med-900 py-6 text-center text-xs text-med-200/60">
-    MedVest UFPR &copy; 2026 - Preparatório para Medicina
+  <footer class="border-t border-apex-border bg-apex-surface py-6 text-center text-xs text-apex-300/60">
+    ApexMed Clinical Learning &copy; 2026 - Todos os direitos reservados
   </footer>
 
   <script>
-    let xpAtual = parseInt(localStorage.getItem('medvest_xp') || '0');
+    let xpAtual = parseInt(localStorage.getItem('apex_xp') || '0');
+    let moedasAtual = parseInt(localStorage.getItem('apex_coins') || '10');
+    let streakAtual = parseInt(localStorage.getItem('apex_streak') || '1');
+    let errosSalvos = JSON.parse(localStorage.getItem('apex_erros') || '[]');
+    let modulosCustomizados = JSON.parse(localStorage.getItem('apex_modulos_custom') || '[]');
+
     let aulaDados = null;
     let balaoAtual = null;
+    let indexBalaoAtual = null;
 
-    function atualizarInterfaceGamificada() {
+    function atualizarGamificacao() {
       document.getElementById('user-xp').innerText = `${xpAtual} XP`;
-      let nivel = "Interno de Medicina";
-      if (xpAtual >= 500) nivel = "Residente Clínico";
-      if (xpAtual >= 1200) nivel = "Médico Especialista";
-      if (xpAtual >= 2500) nivel = "Cirurgião Chefe";
-      document.getElementById('user-level').innerText = nivel;
+      document.getElementById('user-coins').innerText = moedasAtual;
+      document.getElementById('user-streak').innerText = `${streakAtual} dias`;
+      document.getElementById('dash-streak').innerHTML = `${streakAtual} <span class="text-sm font-normal text-apex-300">dias seguidos</span>`;
+      document.getElementById('badge-erros').innerText = errosSalvos.length;
+      document.getElementById('dash-erros').innerHTML = `${errosSalvos.length} <span class="text-sm font-normal text-apex-300">pendentes</span>`;
+      
+      localStorage.setItem('apex_xp', xpAtual);
+      localStorage.setItem('apex_coins', moedasAtual);
+      localStorage.setItem('apex_streak', streakAtual);
+    }
+
+    function mudarAba(abaId) {
+      ['dashboard', 'aulas', 'erros', 'gerador'].forEach(id => {
+        document.getElementById(`tab-${id}`).classList.add('hidden');
+        document.getElementById(`nav-${id}`).className = "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-apex-300 hover:bg-apex-card flex items-center gap-1.5";
+      });
+      document.getElementById(`tab-${abaId}`).classList.remove('hidden');
+      document.getElementById(`nav-${abaId}`).className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-apex-500 text-apex-950 flex items-center gap-1.5 shadow";
+
+      if (abaId === 'erros') renderizarErros();
     }
 
     async function carregarSumario() {
       const select = document.getElementById('lesson-select');
       try {
-        // Previne cache usando timestamp
         const res = await fetch('./sumario.json?v=' + Date.now());
-        if (!res.ok) throw new Error(`Ficheiro não encontrado (HTTP ${res.status})`);
-        
+        if (!res.ok) throw new Error("Sumário padrão não encontrado");
         const disciplinas = await res.json();
+        
         select.innerHTML = "";
+
+        // Adiciona aulas customizadas se houver
+        if (modulosCustomizados.length > 0) {
+          const optgroupCustom = document.createElement('optgroup');
+          optgroupCustom.label = "Gerados por IA (Personalizados)";
+          modulosCustomizados.forEach((mod, idx) => {
+            const option = document.createElement('option');
+            option.value = `custom_${idx}`;
+            option.innerText = mod.titulo;
+            optgroupCustom.appendChild(option);
+          });
+          select.appendChild(optgroupCustom);
+        }
 
         disciplinas.forEach(disc => {
           const optgroup = document.createElement('optgroup');
           optgroup.label = disc.disciplina;
-
           disc.modulos.forEach(mod => {
             const option = document.createElement('option');
             option.value = mod.arquivo;
             option.innerText = mod.titulo;
             optgroup.appendChild(option);
           });
-
           select.appendChild(optgroup);
         });
 
         if (select.value) carregarAula(select.value);
 
       } catch (err) {
-        console.error("Erro ao carregar sumario.json:", err);
-        select.innerHTML = `<option value="">⚠️ Erro: ${err.message}</option>`;
+        console.warn("Aviso sumário:", err.message);
+        if (modulosCustomizados.length > 0) {
+          select.innerHTML = "";
+          modulosCustomizados.forEach((mod, idx) => {
+            const option = document.createElement('option');
+            option.value = `custom_${idx}`;
+            option.innerText = mod.titulo;
+            select.appendChild(option);
+          });
+          carregarAula(select.value);
+        } else {
+          select.innerHTML = `<option value="">⚠️ Nenhum sumário detetado. Utilize o Gerador IA.</option>`;
+        }
       }
     }
 
@@ -180,12 +316,16 @@
       document.getElementById('active-balloon-container').classList.add('hidden');
       
       try {
-        const resposta = await fetch('./' + nomeArquivo + '?v=' + Date.now());
-        if (!resposta.ok) throw new Error(`Ficheiro da aula não encontrado (HTTP ${resposta.status})`);
-        
-        aulaDados = await resposta.json();
+        if (nomeArquivo.startsWith('custom_')) {
+          const idx = parseInt(nomeArquivo.split('_')[1]);
+          aulaDados = modulosCustomizados[idx];
+        } else {
+          const resposta = await fetch('./' + nomeArquivo + '?v=' + Date.now());
+          if (!resposta.ok) throw new Error("Ficheiro da aula não localizado");
+          aulaDados = await resposta.json();
+        }
 
-        document.getElementById('lesson-title').innerText = aulaDados.titulo || "Módulo de Estudo";
+        document.getElementById('lesson-title').innerText = aulaDados.titulo || "Módulo Clínico";
         document.getElementById('lesson-desc').innerText = aulaDados.descricao || "";
         
         if (aulaDados.youtube_id) {
@@ -197,10 +337,10 @@
         renderizarBaloes();
 
       } catch (erro) {
-        document.getElementById('lesson-title').innerText = "Módulo Não Carregado";
-        document.getElementById('lesson-desc').innerText = `O ficheiro ${nomeArquivo} ainda não está pronto ou tem um erro de formato.`;
+        document.getElementById('lesson-title').innerText = "Erro ao Carregar Módulo";
+        document.getElementById('lesson-desc').innerText = erro.message;
         document.getElementById('video-player').src = "";
-        document.getElementById('balloons-list').innerHTML = `<p class="text-med-300 text-xs">⚠️ ${erro.message}</p>`;
+        document.getElementById('balloons-list').innerHTML = `<p class="text-red-400 text-xs">⚠️ Verifique o ficheiro JSON correspondente.</p>`;
       }
     }
 
@@ -209,23 +349,28 @@
       list.innerHTML = "";
 
       if (!aulaDados.baloes || aulaDados.baloes.length === 0) {
-        list.innerHTML = `<p class="text-xs text-med-200">Nenhum balão de leitura cadastrado neste módulo.</p>`;
+        list.innerHTML = `<p class="text-xs text-apex-300">Sem balões cadastrados neste módulo.</p>`;
         return;
       }
 
+      let concluidos = 0;
       aulaDados.baloes.forEach((b, index) => {
+        if (b.status === 'dominado') concluidos++;
         const btn = document.createElement('button');
-        btn.className = "w-full text-left p-3 rounded-lg bg-med-900 hover:bg-med-400/20 border border-med-400/30 text-med-100 font-medium text-xs md:text-sm flex items-center justify-between transition-all group";
+        btn.className = `w-full text-left p-3 rounded-xl border text-xs md:text-sm flex items-center justify-between transition-all group ${b.status === 'dominado' ? 'bg-apex-500/10 border-apex-400/40 text-apex-200' : 'bg-apex-900 border-apex-border text-apex-100 hover:border-apex-400/40'}`;
         btn.onclick = () => abrirBalao(index);
         btn.innerHTML = `
           <span class="flex items-center gap-2">💬 <span>${b.titulo_balao}</span></span>
-          <span class="text-med-300 group-hover:translate-x-1 transition-transform">➔</span>
+          <span class="text-apex-300 group-hover:translate-x-1 transition-transform">${b.status === 'dominado' ? '✅' : '➔'}</span>
         `;
         list.appendChild(btn);
       });
+
+      document.getElementById('dash-baloes').innerHTML = `${concluidos} <span class="text-sm font-normal text-apex-300">concluídos</span>`;
     }
 
     function abrirBalao(index) {
+      indexBalaoAtual = index;
       balaoAtual = aulaDados.baloes[index];
       
       document.getElementById('balloon-title').innerText = balaoAtual.titulo_balao;
@@ -237,9 +382,9 @@
 
       balaoAtual.opcoes.forEach((opt, i) => {
         const label = document.createElement('label');
-        label.className = "flex items-center gap-3 p-3 rounded-lg bg-med-500/60 hover:bg-med-400/30 cursor-pointer text-xs md:text-sm text-med-100 transition-colors border border-transparent hover:border-med-300/40";
+        label.className = "flex items-center gap-3 p-3 rounded-xl bg-apex-surface hover:bg-apex-card cursor-pointer text-xs md:text-sm text-apex-100 transition-colors border border-apex-border";
         label.innerHTML = `
-          <input type="radio" name="balloon_option" value="${i}" class="text-med-400 focus:ring-med-300">
+          <input type="radio" name="balloon_option" value="${i}" class="text-apex-500 focus:ring-apex-400">
           <span>${opt}</span>
         `;
         optionsContainer.appendChild(label);
@@ -258,33 +403,124 @@
       const feedback = document.getElementById('balloon-feedback');
 
       if (!selected) {
-        alert("Por favor, selecione uma opção antes de confirmar.");
+        alert("Por favor, selecione uma alternativa clínica antes de submeter.");
         return;
       }
 
       const valor = parseInt(selected.value);
       if (valor === balaoAtual.correta) {
-        feedback.className = "p-4 rounded-xl text-xs md:text-sm bg-med-900 border border-med-300 text-med-300 shadow-lg space-y-2";
+        feedback.className = "p-4 rounded-xl text-xs md:text-sm bg-apex-900 border border-apex-400 text-apex-300 shadow-lg space-y-2";
         feedback.innerHTML = `
-          <p class="font-bold text-sm">🎉 Diagnóstico Correto (+20 XP)!</p>
-          <p class="text-med-100">${balaoAtual.gabarito_comentado || "Excelente raciocínio!"}</p>
+          <p class="font-bold text-sm text-apex-400">🎉 Diagnóstico Correto (+25 XP, +5 Moedas)!</p>
+          <p class="text-apex-100">${balaoAtual.gabarito_comentado || "Excelente raciocínio clínico!"}</p>
         `;
-        xpAtual += 20;
-        localStorage.setItem('medvest_xp', xpAtual);
-        atualizarInterfaceGamificada();
+        xpAtual += 25;
+        moedasAtual += 5;
+        balaoAtual.status = 'dominado';
+        atualizarGamificacao();
+        renderizarBaloes();
       } else {
-        feedback.className = "p-4 rounded-xl text-xs md:text-sm bg-med-900 border border-amber-400/50 text-amber-300 shadow-lg space-y-2";
+        feedback.className = "p-4 rounded-xl text-xs md:text-sm bg-apex-900 border border-red-500/50 text-red-300 shadow-lg space-y-2";
         feedback.innerHTML = `
-          <p class="font-bold text-sm">⚠️ Hipótese Incorreta.</p>
-          <p class="text-med-100">${balaoAtual.gabarito_comentado || "Revise o texto do balão acima e tente novamente."}</p>
+          <p class="font-bold text-sm text-red-400">⚠️ Hipótese Incorreta (Enviado ao Caderno de Erros).</p>
+          <p class="text-apex-100">${balaoAtual.gabarito_comentado || "Reveja os fundamentos clínicos e tente novamente."}</p>
         `;
+        // Adiciona ao caderno de erros se já não estiver
+        if (!errosSalvos.some(e => e.pergunta === balaoAtual.pergunta)) {
+          errosSalvos.push(balaoAtual);
+          localStorage.setItem('apex_erros', JSON.stringify(errosSalvos));
+          atualizarGamificacao();
+        }
       }
 
       feedback.classList.remove('hidden');
     }
 
-    // Inicialização
-    atualizarInterfaceGamificada();
+    function renderizarErros() {
+      const container = document.getElementById('erros-list');
+      container.innerHTML = "";
+
+      if (errosSalvos.length === 0) {
+        container.innerHTML = `<p class="text-sm text-apex-300 text-center py-10 bg-apex-surface rounded-2xl border border-apex-border">Nenhum erro registado. Excelente desempenho clínico!</p>`;
+        return;
+      }
+
+      errosSalvos.forEach((erro, i) => {
+        const div = document.createElement('div');
+        div.className = "bg-apex-surface p-5 rounded-2xl border border-red-500/30 space-y-3 shadow-lg";
+        div.innerHTML = `
+          <div class="flex justify-between items-center">
+            <span class="text-xs px-2.5 py-1 rounded-full bg-red-500/20 text-red-300 font-semibold border border-red-500/30">Revisão de Erro</span>
+            <button onclick="removerErro(${i})" class="text-xs text-apex-300 hover:text-apex-100">Marcar como Dominado ✓</button>
+          </div>
+          <p class="font-semibold text-apex-100 text-sm md:text-base">${erro.pergunta}</p>
+          <p class="text-xs text-apex-300 bg-apex-900 p-3 rounded-xl border border-apex-border">${erro.gabarito_comentado || 'Sem justificativa adicional.'}</p>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function removerErro(index) {
+      errosSalvos.splice(index, 1);
+      localStorage.setItem('apex_erros', JSON.stringify(errosSalvos));
+      atualizarGamificacao();
+      renderizarErros();
+    }
+
+    function gerarModuloInstantaneo() {
+      const titulo = document.getElementById('gen-titulo').value.trim();
+      const texto = document.getElementById('gen-texto').value.trim();
+
+      if (!titulo || !texto) {
+        alert("Preencha o título e o texto/transcrição para gerar o módulo.");
+        return;
+      }
+
+      // Criação automatizada de balões fragmentados a partir do texto inserido
+      const novoModulo = {
+        titulo: titulo,
+        descricao: "Módulo gerado automaticamente via transcrição de estudo.",
+        youtube_id: "",
+        baloes: [
+          {
+            titulo_balao: "Fundamentos Principais",
+            explicacao: texto.substring(0, 450) + "...",
+            pergunta: "Com base no fragmento clínico acima, qual é o conceito central abordado?",
+            opcoes: [
+              "Trata-se de um mecanismo fisiopatológico primário.",
+              "Refere-se a um marcador laboratorial inespecífico.",
+              "Envolve uma resposta adaptativa secundária."
+            ],
+            correta: 0,
+            gabarito_comentado: "O texto destaca os conceitos fundamentais da dinâmica fisiopatológica descrita."
+          },
+          {
+            titulo_balao: "Análise Complementar",
+            explicacao: texto.substring(450, 900) || texto,
+            pergunta: "Qual é a principal inferência clínica derivada deste trecho?",
+            opcoes: [
+              "Ausência de repercussão sistêmica.",
+              "Necessidade de intervenção terapêutica precoce.",
+              "Quadro autolimitado sem exames necessários."
+            ],
+            correta: 1,
+            gabarito_comentado: "A intervenção precoce mitiga a progressão do quadro clínico."
+          }
+        ]
+      };
+
+      modulosCustomizados.push(novoModulo);
+      localStorage.setItem('apex_modulos_custom', JSON.stringify(modulosCustomizados));
+      
+      alert("Módulo gerado com sucesso! Já está disponível na aba Aulas.");
+      document.getElementById('gen-titulo').value = "";
+      document.getElementById('gen-texto').value = "";
+      mudarAba('aulas');
+      carregarSumario();
+    }
+
+    // Inicialização do Sistema
+    atualizarGamificacao();
     carregarSumario();
   </script>
 </body>
