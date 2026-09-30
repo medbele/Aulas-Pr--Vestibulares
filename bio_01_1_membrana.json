@@ -1,0 +1,49 @@
+{
+  "titulo": "Bio 01.1: Membrana Plasmática e Transportes",
+  "descricao": "Estudo interativo por fragmentos teóricos e casos práticos da membrana celular.",
+  "youtube_id": "8il4G-2cQZk",
+  "baloes": [
+    {
+      "id": 1,
+      "titulo_balao": "1. Estrutura do Mosaico Fluido",
+      "explicacao": "A membrana plasmática possui uma estrutura lipoproteica descrita pelo Modelo do Mosaico Fluido (Singer e Nicolson). É composta por uma dupla camada de fosfolípidos amphipáticos, onde as cabeças de fosfato são hidrofílicas (interagem com a água) e as caudas de ácidos gordos são hidrofóbicas (repolem a água). Inseridas nesta matriz, encontram-se proteínas integrais e periféricas com mobilidade lateral.",
+      "pergunta": "Qual é a razão pela qual as caudas de ácidos gordos se organizam no interior da bicamada lipídica?",
+      "opcoes": [
+        "Porque são hidrofílicas e atraem as moléculas de água do citoplasma.",
+        "Porque são hidrofóbicas e evitam o contacto direto com os meios aquosos.",
+        "Porque necessitam de estar ligadas diretamente ao ATP para manter o transporte ativo.",
+        "Porque são formadas por glícidos e rígidas como a celulose."
+      ],
+      "correta": 1,
+      "gabarito_comentado": "Correto! Por serem apolares (hidrofóbicas), as cadeias de ácidos gordos repelem a água e orientam-se para o interior da membrana, longe dos meios aquosos intracelular e extracelular."
+    },
+    {
+      "id": 2,
+      "titulo_balao": "2. Transporte Passivo: Osmose e Difusão",
+      "explicacao": "O transporte passivo ocorre SEM gasto de energia celular (ATP), a favor do gradiente de concentração. Na difusão simples, pequenas moléculas apolares (como O2 e CO2) atravessam diretamente os lípidos. Na difusão facilitada, solutos necessitam do auxílio de proteínas de transporte (permeases ou canais). Na osmose, é o solvente (água) que se desloca do meio menos concentrado (hipotónico) para o mais concentrado (hipertónico).",
+      "pergunta": "Uma hemácia colocada numa solução francamente hipertónica irá sofrer:",
+      "opcoes": [
+        "Lise celular por entrada massiva de água.",
+        "Plasmólise com aumento do volume do seu vacúolo.",
+        "Crenação (murchamento) por perda de água por osmose.",
+        "Inibição da difusão facilitada de oxigénio."
+      ],
+      "correta": 2,
+      "gabarito_comentado": "Excelente! Numa solução hipertónica, o meio externo tem maior concentração de solutos. Por osmose, a água sai da hemácia para o exterior, fazendo-a murchar (crenação)."
+    },
+    {
+      "id": 3,
+      "titulo_balao": "3. Transporte Ativo e Bomba Na+/K+",
+      "explicacao": "O transporte ativo ocorre CONTRA o gradiente de concentração e EXIGE consumo de energia (ATP). O principal exemplo é a Bomba de Sódio e Potássio (Na+/K+ ATPase), que bombeia continuamente 3 iões Na+ para fora da célula e 2 iões K+ para dentro. Este processo mantém a carga elétrica negativa no interior e o potencial de repouso das membranas plasmáticas.",
+      "pergunta": "A manutenção da concentração do íon Potássio (K+) mais elevada no meio intracelular depende diretamente de:",
+      "opcoes": [
+        "Difusão simples através dos fosfolípidos da membrana.",
+        "Transporte ativo primário acoplado à hidrólise de ATP.",
+        "Osmose acelerada por canais de aquaporinas.",
+        "Endocitose mediada por recetores glicoproteicos."
+      ],
+      "correta": 1,
+      "gabarito_comentado": "Perfeito! A Bomba Na+/K+ utiliza ATP diretamente para transportar o Potássio para o interior contra o seu gradiente de concentração."
+    }
+  ]
+}
