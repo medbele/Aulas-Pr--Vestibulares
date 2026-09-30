@@ -1,185 +1,97 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Plataforma Microlearning - Medicina & Saúde 🩺</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-slate-950 text-slate-100 min-h-screen p-4 md:p-8 selection:bg-purple-500 selection:text-white">
-  
-  <div class="max-w-4xl mx-auto space-y-6">
-    
-    <!-- Painel Principal de Gamificação - Estética Médica -->
-    <div class="bg-slate-900/90 border border-indigo-500/30 rounded-2xl p-5 md:p-6 shadow-2xl backdrop-blur-md space-y-4">
-      
-      <div class="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-cyan-400 bg-cyan-950/60 px-3 py-1 rounded-full border border-cyan-500/30">
-            🩺 Módulo Clínico & Pré-Vestibular
-          </span>
-          <h1 class="text-2xl md:text-3xl font-black text-white mt-2 flex items-center gap-2">
-            ⚕️ Nível Clínico <span id="player-level" class="text-purple-400">1</span>
-          </h1>
-        </div>
-
-        <!-- Métricas Gamificadas Médicas -->
-        <div class="flex items-center gap-6 bg-slate-950/80 px-5 py-3 rounded-xl border border-slate-800">
-          <div class="text-center">
-            <p class="text-xs font-medium text-slate-400 flex items-center justify-center gap-1">🧬 XP Médico</p>
-            <p id="player-xp" class="text-xl font-extrabold text-cyan-400">0 XP</p>
-          </div>
-          <div class="h-8 w-px bg-slate-800"></div>
-          <div class="text-center">
-            <p class="text-xs font-medium text-slate-400 flex items-center justify-center gap-1">🫀 Ritmo</p>
-            <p id="player-streak" class="text-xl font-extrabold text-rose-500">🫀 1 Dia</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Barra de Progresso Médica -->
-      <div class="space-y-1.5">
-        <div class="flex justify-between text-xs font-semibold text-slate-400">
-          <span>📊 Diagnóstico de Aprendizagem</span>
-          <span>Progresso do Módulo</span>
-        </div>
-        <div class="w-full bg-slate-950 rounded-full h-3.5 p-0.5 border border-slate-800 overflow-hidden">
-          <div id="lesson-progress-bar" class="bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-400 h-full rounded-full w-0 transition-all duration-500 shadow-sm shadow-cyan-500/50"></div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Seletor de Aulas / Casos Clínicos -->
-    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-slate-900 p-4 rounded-xl border border-purple-500/20 gap-3">
+<!-- Seletor Universal por Disciplina, Tema e Assunto (Edital UFPR / Medicina) -->
+    <div class="flex flex-col gap-2 bg-slate-900 p-4 rounded-xl border border-purple-500/20 shadow-lg">
       <label for="lesson-select" class="font-semibold text-slate-300 flex items-center gap-2 text-sm md:text-base">
-        🧠 Escolher Rota de Estudo:
+        🩺 Selecionar Módulo de Estudo / Caso Clínico:
       </label>
-      <select id="lesson-select" onchange="carregarAula(this.value)" class="w-full sm:w-auto bg-slate-950 border border-indigo-500/40 rounded-lg px-4 py-2.5 text-slate-100 font-medium focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all cursor-pointer">
-        <option value="aula1.json">🩺 Aula 1: Fundamentos do Vestibular</option>
-        <!-- Futuras aulas médicas serão adicionadas aqui -->
+      
+      <select id="lesson-select" onchange="carregarAula(this.value)" class="w-full bg-slate-950 border border-indigo-500/40 rounded-lg px-4 py-3 text-slate-100 font-medium focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all cursor-pointer">
+        
+        <!-- BIOLOGIA -->
+        <optgroup label="🧬 BIOLOGIA">
+          <option value="bio_01_citologia.json">Bio 01: Citologia - Membrana Plasmática e Organelas</option>
+          <option value="bio_02_genetica.json">Bio 02: Genética - Leis de Mendel e Biotecnologia</option>
+          <option value="bio_03_ecologia.json">Bio 03: Ecologia - Cadeias Alimentares e Biomas</option>
+          <option value="bio_04_fisiologia.json">Bio 04: Fisiologia Humana e Sistemas</option>
+        </optgroup>
+
+        <!-- QUÍMICA -->
+        <optgroup label="🧪 QUÍMICA">
+          <option value="qui_01_macroscopica.json">Quím 01: Aspectos Macroscópicos e Separação de Misturas</option>
+          <option value="qui_02_atomistica.json">Quím 02: Teoria Atômica, Tabela Periódica e Propriedades</option>
+          <option value="qui_03_ligacoes.json">Quím 03: Ligações Químicas, Geometria e Polaridade</option>
+          <option value="qui_04_acidos_bases.json">Quím 04: Ácidos, Bases, Sais, Óxidos e Neutralização</option>
+          <option value="qui_05_estequiometria.json">Quím 05: Estequiometria, Mol e Balanceamento</option>
+          <option value="qui_06_solucoes.json">Quím 06: Soluções, Concentrações e Coligativas</option>
+          <option value="qui_07_termoquimica.json">Quím 07: Termoquímica, Lei de Hess e Energia Livre</option>
+          <option value="qui_08_equilibrio.json">Quím 08: Equilíbrio Químico, Le Chatelier e pH/pOH</option>
+          <option value="qui_09_cinetica.json">Quím 09: Cinética Química e Energia de Ativação</option>
+          <option value="qui_10_eletroquimica.json">Quím 10: Eletroquímica - Pilhas e Eletrólise</option>
+          <option value="qui_11_organica_estrutura.json">Quím 11: Química Orgânica - Cadeias e Funções</option>
+          <option value="qui_12_isomeria.json">Quím 12: Isomeria Plana e Espacial (R/S, Cis/Trans)</option>
+          <option value="qui_13_reacoes_organicas.json">Quím 13: Reações Orgânicas e Polímeros</option>
+          <option value="qui_14_biomoleculas.json">Quím 14: Biomoléculas - Aminoácidos, Proteínas e Lipídios</option>
+        </optgroup>
+
+        <!-- FÍSICA -->
+        <optgroup label="⚡ FÍSICA">
+          <option value="fis_01_grandezas.json">Fís 01: Grandezas, Unidades e Análise Dimensional</option>
+          <option value="fis_02_cinematica.json">Fís 02: Mecânica - Cinemática (MRU, MRUV e Lançamentos)</option>
+
+          <option value="fis_03_newton_energia.json">Fís 03: Mecânica - Leis de Newton, Trabalho e Energia</option>
+          <option value="fis_04_estatica_hidro.json">Fís 04: Mecânica - Estática, Hidrostática e Empuxo</option>
+          <option value="fis_05_termologia.json">Fís 05: Termologia, Calorimetria e Termodinâmica</option>
+          <option value="fis_06_ondulatoria.json">Fís 06: Ondulatória e Acústica (Efeito Doppler)</option>
+          <option value="fis_07_eletromagnetismo.json">Fís 07: Eletromagnetismo, Circuitos e Leis de Kirchoff</option>
+          <option value="fis_08_optica.json">Fís 08: Óptica Geométrica e Lentes</option>
+          <option value="fis_09_moderna.json">Fís 09: Física Moderna e Efeito Fotoelétrico</option>
+        </optgroup>
+
+        <!-- MATEMÁTICA -->
+        <optgroup label="🧮 MATEMÁTICA">
+          <option value="mat_01_funcoes_seq.json">Mat 01: Funções, Gráficos e Sequências (PA/PG)</option>
+          <option value="mat_02_geometria_plana_esp.json">Mat 02: Geometria Plana, Espacial e Trigonometria</option>
+          <option value="mat_03_algebra_matrizes.json">Mat 03: Álgebra, Polinômios, Matrizes e Sistemas</option>
+          <option value="mat_04_analitica.json">Mat 04: Geometria Analítica (Reta e Círculo)</option>
+          <option value="mat_05_estatistica_prob.json">Mat 05: Estatística, Probabilidade e Combinatória</option>
+        </optgroup>
+
+        <!-- FILOSOFIA -->
+        <optgroup label="📜 FILOSOFIA">
+          <option value="fil_01_mito_filosofia.json">Fil 01: Mito e Filosofia (Saber Mítico vs. Filosófico)</option>
+          <option value="fil_02_conhecimento.json">Fil 02: Teoria do Conhecimento e o Problema da Verdade</option>
+          <option value="fil_03_etica.json">Fil 03: Ética, Moral e Liberdade</option>
+          <option value="fil_04_politica.json">Fil 04: Política, Ideologia e Cidadania</option>
+          <option value="fil_05_ciencia.json">Fil 05: Filosofia da Ciência e Método Científico</option>
+          <option value="fil_06_estetica.json">Fil 06: Estética e Categorias da Arte</option>
+        </optgroup>
+
+        <!-- SOCIOLOGIA -->
+        <optgroup label="🤝 SOCIOLOGIA">
+          <option value="soc_01_origens.json">Soc 01: Origem da Sociologia (Durkheim, Weber, Marx)</option>
+          <option value="soc_02_trabalho.json">Soc 02: Sociedade, Natureza e Divisão do Trabalho</option>
+          <option value="soc_03_estratificacao.json">Soc 03: Estrutura e Estratificação Social no Brasil</option>
+          <option value="soc_04_identidade.json">Soc 04: Indivíduo, Identidade, Gênero e Diversidade</option>
+          <option value="soc_05_estado.json">Soc 05: Estado Moderno, Dominação e Poder</option>
+          <option value="soc_06_movimentos.json">Soc 06: Mudança Social e Movimentos Sociais</option>
+          <option value="soc_07_cultura_midia.json">Soc 07: Cultura, Indústria Cultural e Novas Mídias</option>
+        </optgroup>
+
+        <!-- HISTÓRIA -->
+        <optgroup label="🏛️ HISTÓRIA">
+          <option value="his_01_antiga.json">Hist 01: Mundo Antigo (Grécia, Roma e África Antiga)</option>
+          <option value="his_02_medieval.json">Hist 02: Feudalismo, Baixa Idade Média e Islã</option>
+          <option value="his_03_moderna.json">Hist 03: Idade Moderna, Navegações e Brasil Colônia</option>
+          <option value="his_04_contemporanea.json">Hist 04: Mundo Contemporâneo, Revoluções e Guerras</option>
+        </optgroup>
+
+        <!-- GEOGRAFIA -->
+        <optgroup label="🌍 GEOGRAFIA">
+          <option value="geo_01_fisica.json">Geo 01: Geografia Física (Geologia, Relevo, Clima, Solo)</option>
+          <option value="geo_02_populacao.json">Geo 02: Demografia, Migrações e Estrutura Social</option>
+          <option value="geo_03_economia.json">Geo 03: Espaço Agrário, Industrialização e Urbanização</option>
+          <option value="geo_04_geopolitica.json">Geo 04: Geopolítica, Estado-Nação e Ordem Mundial</option>
+          <option value="geo_05_cartografia.json">Geo 05: Cartografia, Fusos e Sensoriamento Remoto</option>
+        </optgroup>
+
       </select>
     </div>
-
-    <!-- Contentor do Vídeo -->
-    <div class="aspect-video w-full rounded-2xl overflow-hidden shadow-2xl bg-black border border-indigo-500/20">
-      <iframe id="youtube-player" class="w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
-    </div>
-
-    <!-- Contentor dos Fragmentos / Quizzes -->
-    <div id="fragmentos-container" class="space-y-6">
-      <p class="text-center text-slate-400 animate-pulse">A carregar prontuário de estudo...</p>
-    </div>
-
-  </div>
-
-  <script>
-    // Sistema de Gamificação (LocalStorage)
-    let state = JSON.parse(localStorage.getItem('microlearning_state')) || {
-      xp: 0,
-      level: 1,
-      streak: 1,
-      aulasConcluidas: {}
-    };
-
-    function atualizarInterfaceGamificada() {
-      state.level = Math.floor(state.xp / 100) + 1;
-      document.getElementById('player-xp').innerText = `${state.xp} XP`;
-      document.getElementById('player-level').innerText = state.level;
-      document.getElementById('player-streak').innerText = `🫀 ${state.streak} Dia${state.streak > 1 ? 's' : ''}`;
-      localStorage.setItem('microlearning_state', JSON.stringify(state));
-    }
-
-    let totalFragmentos = 0;
-    let acertosAulaAtual = 0;
-
-    function carregarAula(arquivoJson) {
-      acertosAulaAtual = 0;
-      document.getElementById('lesson-progress-bar').style.width = '0%';
-      
-      fetch(arquivoJson)
-        .then(res => res.json())
-        .then(data => {
-          document.getElementById('youtube-player').src = `https://www.youtube.com/embed/${data.video_id}`;
-          
-          const container = document.getElementById('fragmentos-container');
-          container.innerHTML = '';
-          totalFragmentos = data.fragmentos.length;
-
-          data.fragmentos.forEach((frag, index) => {
-            const card = document.createElement('div');
-            card.className = "bg-slate-900/80 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4 hover:border-indigo-500/30 transition-all";
-            
-            let opcoesHTML = frag.opcoes.map((opt, i) => `
-              <button onclick="verificarResposta(${index}, ${i}, ${frag.resposta_correta})" 
-                      class="opcao-btn-${index} w-full text-left p-3.5 rounded-xl border border-slate-800 hover:bg-indigo-950/40 hover:border-indigo-500/50 transition-all font-medium text-slate-200">
-                ${opt}
-              </button>
-            `).join('');
-
-            card.innerHTML = `
-              <div class="flex items-center justify-between">
-                <span class="bg-indigo-950/80 text-indigo-300 border border-indigo-500/30 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider flex items-center gap-1">
-                  🩺 Bloco ${frag.id}
-                </span>
-                <span class="text-xs text-cyan-400 font-semibold flex items-center gap-1">💊 +50 XP Médico</span>
-              </div>
-              <h2 class="text-xl font-bold text-white">${frag.titulo}</h2>
-              <p class="text-slate-300 leading-relaxed text-sm md:text-base">${frag.explicacao}</p>
-              
-              <div class="pt-4 border-t border-slate-800 mt-4">
-                <p class="font-semibold text-slate-100 mb-3 flex items-center gap-2">
-                  <span>❓</span> ${frag.pergunta}
-                </p>
-                <div class="space-y-2.5">${opcoesHTML}</div>
-                <div id="feedback-${index}" class="hidden mt-4 p-4 rounded-xl text-sm font-bold flex items-center justify-between"></div>
-              </div>
-            `;
-            
-            container.appendChild(card);
-          });
-        })
-        .catch(err => {
-          document.getElementById('fragmentos-container').innerHTML = 
-            '<p class="text-rose-400 text-center font-bold">Erro ao carregar o prontuário da aula.</p>';
-        });
-    }
-
-    function verificarResposta(fragIndex, opcaoSelecionada, correta) {
-      const feedback = document.getElementById(`feedback-${fragIndex}`);
-      const botoes = document.querySelectorAll(`.opcao-btn-${fragIndex}`);
-      
-      botoes.forEach((btn, i) => {
-        btn.disabled = true;
-        if (i === correta) {
-          btn.classList.add('bg-emerald-950/60', 'border-emerald-500', 'text-emerald-300', 'font-bold');
-        } else if (i === opcaoSelecionada) {
-          btn.classList.add('bg-rose-950/60', 'border-rose-500', 'text-rose-300');
-        } else {
-          btn.classList.add('opacity-40');
-        }
-      });
-
-      feedback.classList.remove('hidden');
-      if (opcaoSelecionada === correta) {
-        feedback.className = "mt-4 p-4 rounded-xl text-sm font-bold bg-emerald-950/50 text-emerald-300 border border-emerald-500/40 shadow-lg shadow-emerald-950/30";
-        feedback.innerHTML = "<span>✨ Diagnóstico Correto! +50 XP Médico</span>";
-        
-        state.xp += 50;
-        acertosAulaAtual++;
-        atualizarInterfaceGamificada();
-      } else {
-        feedback.className = "mt-4 p-4 rounded-xl text-sm font-bold bg-rose-950/50 text-rose-300 border border-rose-500/40 shadow-lg shadow-rose-950/30";
-        feedback.innerText = "❌ Diagnóstico incorreto. Revise a fundamentação teórica acima.";
-      }
-
-      const progresso = (acertosAulaAtual / totalFragmentos) * 100;
-      document.getElementById('lesson-progress-bar').style.width = `${progresso}%`;
-    }
-
-    // Inicialização
-    atualizarInterfaceGamificada();
-    carregarAula('aula1.json');
-  </script>
-</body>
-</html>
