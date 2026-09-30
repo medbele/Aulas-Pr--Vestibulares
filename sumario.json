@@ -1,1 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedVest - Módulos de Estudo & Casos Clínicos</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Configuração da Paleta Médica -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            med: {
+              100: '#F3FBFF', // Texto principal
+              200: '#CDEFFF', // Texto secundário e bordas
+              300: '#7AD9FF', // Ícones e destaques
+              400: '#1AA3D9', // Botões e seleção
+              500: '#123B4A', // Fundo dos cards
+              900: '#0B242E', // Fundo principal da página
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    select optgroup {
+      background-color: #123B4A;
+      color: #7AD9FF;
+      font-weight: bold;
+    }
+    select option {
+      background-color: #0B242E;
+      color: #F3FBFF;
+    }
+  </style>
+</head>
+<body class="bg-med-900 text-med-100 min-h-screen flex flex-col font-sans selection:bg-med-400 selection:text-med-100">
 
+  <!-- Cabeçalho Principal -->
+  <header class="border-b border-med-400/30 bg-med-500/90 backdrop-blur sticky top-0 z-50 px-4 py-3 shadow-lg">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="p-2 bg-med-400/20 border border-med-300/40 rounded-xl text-med-300 text-xl shadow-inner">
+          🩺
+        </div>
+        <div>
+          <h1 class="font-bold text-lg md:text-xl text-med-100 flex items-center gap-2">
+            MedVest <span class="text-xs px-2 py-0.5 rounded-full bg-med-400/30 border border-med-300/50 text-med-200">UFPR / Medicina</span>
+          </h1>
+          <p class="text-xs text-med-200/80">Plataforma Gamificada de Aprendizagem</p>
+        </div>
+      </div>
+
+      <!-- Gamificação -->
+      <div class="flex items-center gap-4 bg-med-900/90 px-4 py-2 rounded-xl border border-med-400/30 text-xs md:text-sm">
+        <div class="flex items-center gap-1.5">
+          <span>🩺</span>
+          <span id="user-level" class="font-semibold text-med-300">Interno de Medicina</span>
+        </div>
+        <div class="h-4 w-px bg-med-400/30"></div>
+        <div class="flex items-center gap-1.5">
+          <span>⚡</span>
+          <span id="user-xp" class="font-bold text-med-200">0 XP</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Conteúdo Principal -->
+  <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 space-y-6">
+
+    <!-- Seletor Dinâmico por Sumário -->
+    <div class="flex flex-col gap-2 bg-med-500 p-4 rounded-xl border border-med-400/40 shadow-xl">
+      <label for="lesson-select" class="font-semibold text-med-200 flex items-center gap-2 text-sm md:text-base">
+        🩺 Selecionar Subtópico / Módulo de Estudo:
+      </label>
+      
+      <select id="lesson-select" onchange="carregarAula(this.value)" class="w-full bg-med-900 border border-med-400/60 rounded-lg px-4 py-3 text-med-100 font-medium focus:outline-none focus:ring-2 focus:ring-med-300 transition-all cursor-pointer">
+        <option value="">Carregando sumário de aulas...</option>
+      </select>
+    </div>
+
+    <!-- Barra de Progresso -->
+    <div class="bg-med-500 p-4 rounded-xl border border-med-400/30 space-y-2 shadow-md">
+      <div class="flex justify-between text-xs font-semibold text-med-200">
+        <span>PROGRESSO DO MÓDULO</span>
+        <span id="progress-percent">0%</span>
+      </div>
+      <div class="w-full bg-med-900 h-3 rounded-full overflow-hidden border border-med-400/20">
+        <div id="lesson-progress-bar" class="bg-gradient-to-r from-med-400 to-med-300 h-full w-0 transition-all duration-500"></div>
+      </div>
+    </div>
+
+    <!-- Vídeo e Questões -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2 space-y-4">
+        <div class="bg-med-500 border border-med-400/30 rounded-xl overflow-hidden shadow-2xl aspect-video relative">
+          <iframe id="video-player" class="w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <div class="bg-med-500 p-4 rounded-xl border border-med-400/30">
+          <h2 id="lesson-title" class="text-lg font-bold text-med-100">Carregando Módulo...</h2>
+          <p id="lesson-desc" class="text-sm text-med-200/90 mt-1">Selecione uma aula acima para iniciar os estudos.</p>
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <div id="quiz-container" class="bg-med-500 p-5 rounded-xl border border-med-400/30 space-y-4 shadow-xl">
+          <p class="text-med-200 text-sm">Selecione um subtópico para carregar as questões.</p>
+        </div>
+        <div id="feedback" class="hidden"></div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="border-t border-med-500 bg-med-900 py-6 text-center text-xs text-med-200/60">
+    MedVest UFPR &copy; 2026 - Preparatório para Medicina e Vestibulares
+  </footer>
+
+  <script>
+    let xpAtual = parseInt(localStorage.getItem('medvest_xp') || '0');
+    let acertosAulaAtual = 0;
+    let totalFragmentos = 0;
+    let aulaDados = null;
+
+    function atualizarInterfaceGamificada() {
+      document.getElementById('user-xp').innerText = `${xpAtual} XP`;
+      let nivel = "Interno de Medicina";
+      if (xpAtual >= 500) nivel = "Residente Clínico";
+      if (xpAtual >= 1200) nivel = "Médico Especialista";
+      if (xpAtual >= 2500) nivel = "Cirurgião Chefe";
+      document.getElementById('user-level').innerText = nivel;
+    }
+
+    // Carrega o arquivo central sumario.json e monta o menu dinamicamente
+    async function carregarSumario() {
+      const select = document.getElementById('lesson-select');
+      try {
+        const res = await fetch('sumario.json');
+        if (!res.ok) throw new Error("Erro ao carregar sumario.json");
+        const disciplinas = await res.json();
+
+        select.innerHTML = "";
+
+        disciplinas.forEach(disc => {
+          const optgroup = document.createElement('optgroup');
+          optgroup.label = disc.disciplina;
+
+          disc.modulos.forEach(mod => {
+            const option = document.createElement('option');
+            option.value = mod.arquivo;
+            option.innerText = mod.titulo;
+            optgroup.appendChild(option);
+          });
+
+          select.appendChild(optgroup);
+        });
+
+        // Carrega a primeira aula por padrão se existir
+        if (select.value) {
+          carregarAula(select.value);
+        }
+
+      } catch (err) {
+        select.innerHTML = `<option value="">⚠️ Erro ao carregar sumario.json</option>`;
+      }
+    }
+
+    async function carregarAula(nomeArquivo) {
+      if (!nomeArquivo) return;
+      const feedback = document.getElementById('feedback');
+      feedback.className = "hidden";
+      
+      try {
+        const resposta = await fetch(nomeArquivo);
+        if (!resposta.ok) throw new Error("Arquivo da aula não encontrado.");
+        aulaDados = await resposta.json();
+
+        document.getElementById('lesson-title').innerText = aulaDados.titulo || "Módulo de Estudo";
+        document.getElementById('lesson-desc').innerText = aulaDados.descricao || "";
+        
+        if (aulaDados.youtube_id) {
+          document.getElementById('video-player').src = `https://www.youtube.com/embed/${aulaDados.youtube_id}`;
+        }
+
+        const quizContainer = document.getElementById('quiz-container');
+        quizContainer.innerHTML = "";
+
+        if (aulaDados.questoes && aulaDados.questoes.length > 0) {
+          totalFragmentos = aulaDados.questoes.length;
+          acertosAulaAtual = 0;
+          atualizarProgresso();
+
+          aulaDados.questoes.forEach((q, index) => {
+            const qEl = document.createElement('div');
+            qEl.className = "space-y-3 bg-med-900 p-4 rounded-lg border border-med-400/30";
+            
+            let ophtml = q.opcoes.map((opt, i) => `
+              <label class="flex items-center gap-2 p-2 rounded bg-med-500/60 hover:bg-med-400/30 cursor-pointer text-xs md:text-sm text-med-100 transition-colors border border-transparent hover:border-med-300/40">
+                <input type="radio" name="q_${index}" value="${i}" class="text-med-400 focus:ring-med-300">
+                <span>${opt}</span>
+              </label>
+            `).join('');
+
+            qEl.innerHTML = `
+              <p class="font-semibold text-sm text-med-300">Questão ${index + 1}: ${q.pergunta}</p>
+              <div class="space-y-1.5">${ophtml}</div>
+            `;
+            quizContainer.appendChild(qEl);
+          });
+
+          const btnVerificar = document.createElement('button');
+          btnVerificar.className = "w-full py-2.5 bg-gradient-to-r from-med-400 to-med-300 hover:brightness-110 font-bold rounded-lg text-med-900 shadow-lg shadow-med-400/20 transition-all text-sm mt-2";
+          btnVerificar.innerText = "🩺 Confirmar Diagnóstico / Respostas";
+          btnVerificar.onclick = verificarRespostas;
+          quizContainer.appendChild(btnVerificar);
+
+        } else {
+          quizContainer.innerHTML = `<p class="text-med-200 text-sm">Esta aula é teórica/demonstrativa. Assista ao vídeo acima!</p>`;
+        }
+
+      } catch (erro) {
+        document.getElementById('lesson-title').innerText = "Módulo Em Breve";
+        document.getElementById('lesson-desc').innerText = `O arquivo ${nomeArquivo} ainda precisa ser criado no GitHub.`;
+        document.getElementById('video-player').src = "";
+        document.getElementById('quiz-container').innerHTML = `<p class="text-med-300 text-sm">⚠️️ Este subtópico está cadastrado no sumário, mas o arquivo <b>${nomeArquivo}</b> ainda não foi adicionado ao repositório.</p>`;
+      }
+    }
+
+    function verificarRespostas() {
+      if (!aulaDados || !aulaDados.questoes) return;
+      
+      let acertos = 0;
+      aulaDados.questoes.forEach((q, index) => {
+        const selected = document.querySelector(`input[name="q_${index}"]:checked`);
+        if (selected && parseInt(selected.value) === q.correta) {
+          acertos++;
+        }
+      });
+
+      acertosAulaAtual = acertos;
+      atualizarProgresso();
+
+      const feedback = document.getElementById('feedback');
+      if (acertos === totalFragmentos && totalFragmentos > 0) {
+        feedback.className = "p-4 rounded-xl text-sm font-bold bg-med-900 border border-med-300 text-med-300 shadow-lg";
+        feedback.innerText = `🎉 Diagnóstico Perfeito: ${acertos}/${totalFragmentos} acertos (+50 XP)!`;
+        xpAtual += 50;
+        localStorage.setItem('medvest_xp', xpAtual);
+        atualizarInterfaceGamificada();
+      } else {
+        feedback.className = "p-4 rounded-xl text-sm font-bold bg-med-900 border border-amber-400/50 text-amber-300 shadow-lg";
+        feedback.innerText = `⚠️ Você acertou ${acertos} de ${totalFragmentos}. Revise os trechos da aula e tente novamente.`;
+      }
+    }
+
+    function atualizarProgresso() {
+      const pct = totalFragmentos > 0 ? Math.round((acertosAulaAtual / totalFragmentos) * 100) : 0;
+      document.getElementById('lesson-progress-bar').style.width = `${pct}%`;
+      document.getElementById('progress-percent').innerText = `${pct}%`;
+    }
+
+    // Inicialização
+    atualizarInterfaceGamificada();
+    carregarSumario();
+  </script>
+</body>
+</html>
