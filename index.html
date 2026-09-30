@@ -1,4 +1,48 @@
-<!-- Seletor Universal por Disciplina, Tema e Assunto (Edital UFPR / Medicina) -->
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedVest - Módulos de Estudo & Casos Clínicos</title>
+  <!-- Tailwind CSS para o visual moderno -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-purple-500 selection:text-white">
+
+  <!-- Cabeçalho Principal / Barra Superior -->
+  <header class="border-b border-purple-500/20 bg-slate-900/80 backdrop-blur sticky top-0 z-50 px-4 py-3">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="p-2 bg-purple-600/20 border border-purple-500/40 rounded-xl text-purple-400 text-xl">
+          🩺
+        </div>
+        <div>
+          <h1 class="font-bold text-lg md:text-xl text-slate-100 flex items-center gap-2">
+            MedVest <span class="text-xs px-2 py-0.5 rounded-full bg-cyan-500/20 border border-cyan-500/40 text-cyan-300">UFPR / Medicina</span>
+          </h1>
+          <p class="text-xs text-slate-400">Plataforma Gamificada de Aprendizagem</p>
+        </div>
+      </div>
+
+      <!-- Sistema de Nível Médica e XP -->
+      <div class="flex items-center gap-4 bg-slate-950 px-4 py-2 rounded-xl border border-slate-800 text-xs md:text-sm">
+        <div class="flex items-center gap-1.5">
+          <span>🩺</span>
+          <span id="user-level" class="font-semibold text-purple-400">Interno de Medicina</span>
+        </div>
+        <div class="h-4 w-px bg-slate-800"></div>
+        <div class="flex items-center gap-1.5">
+          <span>⚡</span>
+          <span id="user-xp" class="font-bold text-cyan-400">0 XP</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Conteúdo Principal -->
+  <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 space-y-6">
+
+    <!-- Seletor Universal por Disciplina e Assunto -->
     <div class="flex flex-col gap-2 bg-slate-900 p-4 rounded-xl border border-purple-500/20 shadow-lg">
       <label for="lesson-select" class="font-semibold text-slate-300 flex items-center gap-2 text-sm md:text-base">
         🩺 Selecionar Módulo de Estudo / Caso Clínico:
@@ -36,7 +80,6 @@
         <optgroup label="⚡ FÍSICA">
           <option value="fis_01_grandezas.json">Fís 01: Grandezas, Unidades e Análise Dimensional</option>
           <option value="fis_02_cinematica.json">Fís 02: Mecânica - Cinemática (MRU, MRUV e Lançamentos)</option>
-
           <option value="fis_03_newton_energia.json">Fís 03: Mecânica - Leis de Newton, Trabalho e Energia</option>
           <option value="fis_04_estatica_hidro.json">Fís 04: Mecânica - Estática, Hidrostática e Empuxo</option>
           <option value="fis_05_termologia.json">Fís 05: Termologia, Calorimetria e Termodinâmica</option>
@@ -95,3 +138,164 @@
 
       </select>
     </div>
+
+    <!-- Barra de Progresso da Aula -->
+    <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-2">
+      <div class="flex justify-between text-xs font-semibold text-slate-400">
+        <span>PROGRESSO DO MÓDULO</span>
+        <span id="progress-percent">0%</span>
+      </div>
+      <div class="w-full bg-slate-950 h-2.5 rounded-full overflow-hidden border border-slate-800">
+        <div id="lesson-progress-bar" class="bg-gradient-to-r from-purple-500 to-cyan-400 h-full w-0 transition-all duration-500"></div>
+      </div>
+    </div>
+
+    <!-- Seção do Vídeo e Exercícios -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Vídeo da Aula -->
+      <div class="lg:col-span-2 space-y-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl aspect-video relative">
+          <iframe id="video-player" class="w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+          <h2 id="lesson-title" class="text-lg font-bold text-slate-100">Carregando Módulo...</h2>
+          <p id="lesson-desc" class="text-sm text-slate-400 mt-1">Selecione uma disciplina e assunto no menu acima.</p>
+        </div>
+      </div>
+
+      <!-- Área Interativa de Questões -->
+      <div class="space-y-4">
+        <div id="quiz-container" class="bg-slate-900 p-5 rounded-xl border border-slate-800 space-y-4">
+          <p class="text-slate-400 text-sm">Selecione uma aula para carregar os exercícios.</p>
+        </div>
+        <div id="feedback" class="hidden"></div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Rodapé -->
+  <footer class="border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500">
+    MedVest UFPR &copy; 2026 - Preparatório para Medicina e Vestibulares
+  </footer>
+
+  <!-- Lógica JavaScript de Funcionamento -->
+  <script>
+    let xpAtual = parseInt(localStorage.getItem('medvest_xp') || '0');
+    let acertosAulaAtual = 0;
+    let totalFragmentos = 0;
+    let aulaDados = null;
+
+    function atualizarInterfaceGamificada() {
+      document.getElementById('user-xp').innerText = `${xpAtual} XP`;
+      let nivel = "Interno de Medicina";
+      if (xpAtual >= 500) nivel = "Residente Clínico";
+      if (xpAtual >= 1200) nivel = "Médico Especialista";
+      if (xpAtual >= 2500) nivel = "Cirurgião Chefe";
+      document.getElementById('user-level').innerText = nivel;
+    }
+
+    async function carregarAula(nomeArquivo) {
+      const feedback = document.getElementById('feedback');
+      feedback.className = "hidden";
+      
+      try {
+        const resposta = await fetch(nomeArquivo);
+        if (!resposta.ok) throw new Error("Arquivo JSON ainda não foi criado.");
+        aulaDados = await resposta.json();
+
+        document.getElementById('lesson-title').innerText = aulaDados.titulo || "Módulo de Estudo";
+        document.getElementById('lesson-desc').innerText = aulaDados.descricao || "";
+        
+        if (aulaDados.youtube_id) {
+          document.getElementById('video-player').src = `https://www.youtube.com/embed/${aulaDados.youtube_id}`;
+        }
+
+        const quizContainer = document.getElementById('quiz-container');
+        quizContainer.innerHTML = "";
+
+        if (aulaDados.questoes && aulaDados.questoes.length > 0) {
+          totalFragmentos = aulaDados.questoes.length;
+          acertosAulaAtual = 0;
+          atualizarProgresso();
+
+          aulaDados.questoes.forEach((q, index) => {
+            const qEl = document.createElement('div');
+            qEl.className = "space-y-3 bg-slate-950 p-4 rounded-lg border border-slate-800";
+            
+            let ophtml = q.opcoes.map((opt, i) => `
+              <label class="flex items-center gap-2 p-2 rounded bg-slate-900 hover:bg-slate-800 cursor-pointer text-xs md:text-sm text-slate-200 transition-colors">
+                <input type="radio" name="q_${index}" value="${i}" class="text-purple-500 focus:ring-purple-500">
+                <span>${opt}</span>
+              </label>
+            `).join('');
+
+            qEl.innerHTML = `
+              <p class="font-semibold text-sm text-purple-300">Questão ${index + 1}: ${q.pergunta}</p>
+              <div class="space-y-1.5">${ophtml}</div>
+            `;
+            quizContainer.appendChild(qEl);
+          });
+
+          const btnVerificar = document.createElement('button');
+          btnVerificar.className = "w-full py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 font-bold rounded-lg text-white shadow-lg shadow-purple-900/30 transition-all text-sm mt-2";
+          btnVerificar.innerText = "🩺 Confirmar Diagnóstico / Respostas";
+          btnVerificar.onclick = verificarRespostas;
+          quizContainer.appendChild(btnVerificar);
+
+        } else {
+          quizContainer.innerHTML = `<p class="text-slate-400 text-sm">Esta aula é teórica/demonstrativa. Assista ao vídeo acima!</p>`;
+        }
+
+      } catch (erro) {
+        document.getElementById('lesson-title').innerText = "Módulo Em Breve";
+        document.getElementById('lesson-desc').innerText = `O módulo (${nomeArquivo}) será gerado no Google Colab.`;
+        document.getElementById('video-player').src = "";
+        document.getElementById('quiz-container').innerHTML = `<p class="text-amber-400 text-sm">⚠️ Módulo em desenvolvimento. Assim que criar o arquivo <b>${nomeArquivo}</b> no GitHub, ele aparecerá aqui!</p>`;
+      }
+    }
+
+    function verificarRespostas() {
+      if (!aulaDados || !aulaDados.questoes) return;
+      
+      let acertos = 0;
+      aulaDados.questoes.forEach((q, index) => {
+        const selected = document.querySelector(`input[name="q_${index}"]:checked`);
+        if (selected && parseInt(selected.value) === q.correta) {
+          acertos++;
+        }
+      });
+
+      acertosAulaAtual = acertos;
+      atualizarProgresso();
+
+      const feedback = document.getElementById('feedback');
+      if (acertos === totalFragmentos && totalFragmentos > 0) {
+        feedback.className = "p-4 rounded-xl text-sm font-bold bg-emerald-950/60 border border-emerald-500/40 text-emerald-300";
+        feedback.innerText = `🎉 Diagnóstico Perfeito: ${acertos}/${totalFragmentos} acertos (+50 XP)!`;
+        xpAtual += 50;
+        localStorage.setItem('medvest_xp', xpAtual);
+        atualizarInterfaceGamificada();
+      } else {
+        feedback.className = "p-4 rounded-xl text-sm font-bold bg-rose-950/60 border border-rose-500/40 text-rose-300";
+        feedback.innerText = `⚠️ Você acertou ${acertos} de ${totalFragmentos}. Revise os trechos da aula e tente novamente.`;
+      }
+    }
+
+    function atualizarProgresso() {
+      const pct = totalFragmentos > 0 ? Math.round((acertosAulaAtual / totalFragmentos) * 100) : 0;
+      document.getElementById('lesson-progress-bar').style.width = `${pct}%`;
+      document.getElementById('progress-percent').innerText = `${pct}%`;
+    }
+
+    // Inicializar
+    atualizarInterfaceGamificada();
+    const select = document.getElementById('lesson-select');
+    if (select && select.value) {
+      carregarAula(select.value);
+    }
+  </script>
+</body>
+</html>
