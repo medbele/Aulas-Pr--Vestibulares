@@ -8,19 +8,19 @@
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- Configuração da sua Paleta de Cores Customizada -->
+  <!-- Configuração da Paleta Médica -->
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
             med: {
-              100: '#F3FBFF', // Muito claro / Texto principal
-              200: '#CDEFFF', // Azul suave / Texto secundário e bordas
-              300: '#7AD9FF', // Azul céu / Ícones e destaques
-              400: '#1AA3D9', // Azul oceano / Botões e seleção
-              500: '#123B4A', // Marinho escuro / Fundo dos cards
-              900: '#0B242E', // Fundo principal da página (tom mais profundo do #123B4A)
+              100: '#F3FBFF',
+              200: '#CDEFFF',
+              300: '#7AD9FF',
+              400: '#1AA3D9',
+              500: '#123B4A',
+              900: '#0B242E',
             }
           }
         }
@@ -29,21 +29,13 @@
   </script>
   
   <style>
-    /* Estilização personalizada para o menu de seleção */
-    select optgroup {
-      background-color: #123B4A;
-      color: #7AD9FF;
-      font-weight: bold;
-    }
-    select option {
-      background-color: #0B242E;
-      color: #F3FBFF;
-    }
+    select optgroup { background-color: #123B4A; color: #7AD9FF; font-weight: bold; }
+    select option { background-color: #0B242E; color: #F3FBFF; }
   </style>
 </head>
 <body class="bg-med-900 text-med-100 min-h-screen flex flex-col font-sans selection:bg-med-400 selection:text-med-100">
 
-  <!-- Cabeçalho Principal -->
+  <!-- Cabeçalho -->
   <header class="border-b border-med-400/30 bg-med-500/90 backdrop-blur sticky top-0 z-50 px-4 py-3 shadow-lg">
     <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
       <div class="flex items-center gap-3">
@@ -54,11 +46,11 @@
           <h1 class="font-bold text-lg md:text-xl text-med-100 flex items-center gap-2">
             MedVest <span class="text-xs px-2 py-0.5 rounded-full bg-med-400/30 border border-med-300/50 text-med-200">UFPR / Medicina</span>
           </h1>
-          <p class="text-xs text-med-200/80">Plataforma Gamificada de Aprendizagem</p>
+          <p class="text-xs text-med-200/80">Estudo Fragmentado por Balões de Leitura</p>
         </div>
       </div>
 
-      <!-- Sistema de Nível Médico e XP -->
+      <!-- Gamificação -->
       <div class="flex items-center gap-4 bg-med-900/90 px-4 py-2 rounded-xl border border-med-400/30 text-xs md:text-sm">
         <div class="flex items-center gap-1.5">
           <span>🩺</span>
@@ -76,151 +68,73 @@
   <!-- Conteúdo Principal -->
   <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 space-y-6">
 
-    <!-- Seletor Universal por Disciplina e Assunto -->
+    <!-- Seletor de Aulas -->
     <div class="flex flex-col gap-2 bg-med-500 p-4 rounded-xl border border-med-400/40 shadow-xl">
       <label for="lesson-select" class="font-semibold text-med-200 flex items-center gap-2 text-sm md:text-base">
-        🩺 Selecionar Módulo de Estudo / Caso Clínico:
+        📚 Selecionar Disciplina e Módulo:
       </label>
-      
       <select id="lesson-select" onchange="carregarAula(this.value)" class="w-full bg-med-900 border border-med-400/60 rounded-lg px-4 py-3 text-med-100 font-medium focus:outline-none focus:ring-2 focus:ring-med-300 transition-all cursor-pointer">
-        
-        <!-- BIOLOGIA -->
-        <optgroup label="🧬 BIOLOGIA">
-          <option value="bio_01_citologia.json">Bio 01: Citologia - Membrana Plasmática e Organelas</option>
-          <option value="bio_02_genetica.json">Bio 02: Genética - Leis de Mendel e Biotecnologia</option>
-          <option value="bio_03_ecologia.json">Bio 03: Ecologia - Cadeias Alimentares e Biomas</option>
-          <option value="bio_04_fisiologia.json">Bio 04: Fisiologia Humana e Sistemas</option>
-        </optgroup>
-
-        <!-- QUÍMICA -->
-        <optgroup label="🧪 QUÍMICA">
-          <option value="qui_01_macroscopica.json">Quím 01: Aspectos Macroscópicos e Separação de Misturas</option>
-          <option value="qui_02_atomistica.json">Quím 02: Teoria Atômica, Tabela Periódica e Propriedades</option>
-          <option value="qui_03_ligacoes.json">Quím 03: Ligações Químicas, Geometria e Polaridade</option>
-          <option value="qui_04_acidos_bases.json">Quím 04: Ácidos, Bases, Sais, Óxidos e Neutralização</option>
-          <option value="qui_05_estequiometria.json">Quím 05: Estequiometria, Mol e Balanceamento</option>
-          <option value="qui_06_solucoes.json">Quím 06: Soluções, Concentrações e Coligativas</option>
-          <option value="qui_07_termoquimica.json">Quím 07: Termoquímica, Lei de Hess e Energia Livre</option>
-          <option value="qui_08_equilibrio.json">Quím 08: Equilíbrio Químico, Le Chatelier e pH/pOH</option>
-          <option value="qui_09_cinetica.json">Quím 09: Cinética Química e Energia de Ativação</option>
-          <option value="qui_10_eletroquimica.json">Quím 10: Eletroquímica - Pilhas e Eletrólise</option>
-          <option value="qui_11_organica_estrutura.json">Quím 11: Química Orgânica - Cadeias e Funções</option>
-          <option value="qui_12_isomeria.json">Quím 12: Isomeria Plana e Espacial (R/S, Cis/Trans)</option>
-          <option value="qui_13_reacoes_organicas.json">Quím 13: Reações Orgânicas e Polímeros</option>
-          <option value="qui_14_biomoleculas.json">Quím 14: Biomoléculas - Aminoácidos, Proteínas e Lipídios</option>
-        </optgroup>
-
-        <!-- FÍSICA -->
-        <optgroup label="⚡ FÍSICA">
-          <option value="fis_01_grandezas.json">Fís 01: Grandezas, Unidades e Análise Dimensional</option>
-          <option value="fis_02_cinematica.json">Fís 02: Mecânica - Cinemática (MRU, MRUV e Lançamentos)</option>
-          <option value="fis_03_newton_energia.json">Fís 03: Mecânica - Leis de Newton, Trabalho e Energia</option>
-          <option value="fis_04_estatica_hidro.json">Fís 04: Mecânica - Estática, Hidrostática e Empuxo</option>
-          <option value="fis_05_termologia.json">Fís 05: Termologia, Calorimetria e Termodinâmica</option>
-          <option value="fis_06_ondulatoria.json">Fís 06: Ondulatória e Acústica (Efeito Doppler)</option>
-          <option value="fis_07_eletromagnetismo.json">Fís 07: Eletromagnetismo, Circuitos e Leis de Kirchoff</option>
-          <option value="fis_08_optica.json">Fís 08: Óptica Geométrica e Lentes</option>
-          <option value="fis_09_moderna.json">Fís 09: Física Moderna e Efeito Fotoelétrico</option>
-        </optgroup>
-
-        <!-- MATEMÁTICA -->
-        <optgroup label="🧮 MATEMÁTICA">
-          <option value="mat_01_funcoes_seq.json">Mat 01: Funções, Gráficos e Sequências (PA/PG)</option>
-          <option value="mat_02_geometria_plana_esp.json">Mat 02: Geometria Plana, Espacial e Trigonometria</option>
-          <option value="mat_03_algebra_matrizes.json">Mat 03: Álgebra, Polinômios, Matrizes e Sistemas</option>
-          <option value="mat_04_analitica.json">Mat 04: Geometria Analítica (Reta e Círculo)</option>
-          <option value="mat_05_estatistica_prob.json">Mat 05: Estatística, Probabilidade e Combinatória</option>
-        </optgroup>
-
-        <!-- FILOSOFIA -->
-        <optgroup label="📜 FILOSOFIA">
-          <option value="fil_01_mito_filosofia.json">Fil 01: Mito e Filosofia (Saber Mítico vs. Filosófico)</option>
-          <option value="fil_02_conhecimento.json">Fil 02: Teoria do Conhecimento e o Problema da Verdade</option>
-          <option value="fil_03_etica.json">Fil 03: Ética, Moral e Liberdade</option>
-          <option value="fil_04_politica.json">Fil 04: Política, Ideologia e Cidadania</option>
-          <option value="fil_05_ciencia.json">Fil 05: Filosofia da Ciência e Método Científico</option>
-          <option value="fil_06_estetica.json">Fil 06: Estética e Categorias da Arte</option>
-        </optgroup>
-
-        <!-- SOCIOLOGIA -->
-        <optgroup label="🤝 SOCIOLOGIA">
-          <option value="soc_01_origens.json">Soc 01: Origem da Sociologia (Durkheim, Weber, Marx)</option>
-          <option value="soc_02_trabalho.json">Soc 02: Sociedade, Natureza e Divisão do Trabalho</option>
-          <option value="soc_03_estratificacao.json">Soc 03: Estrutura e Estratificação Social no Brasil</option>
-          <option value="soc_04_identidade.json">Soc 04: Indivíduo, Identidade, Gênero e Diversidade</option>
-          <option value="soc_05_estado.json">Soc 05: Estado Moderno, Dominação e Poder</option>
-          <option value="soc_06_movimentos.json">Soc 06: Mudança Social e Movimentos Sociais</option>
-          <option value="soc_07_cultura_midia.json">Soc 07: Cultura, Indústria Cultural e Novas Mídias</option>
-        </optgroup>
-
-        <!-- HISTÓRIA -->
-        <optgroup label="🏛️ HISTÓRIA">
-          <option value="his_01_antiga.json">Hist 01: Mundo Antigo (Grécia, Roma e África Antiga)</option>
-          <option value="his_02_medieval.json">Hist 02: Feudalismo, Baixa Idade Média e Islã</option>
-          <option value="his_03_moderna.json">Hist 03: Idade Moderna, Navegações e Brasil Colônia</option>
-          <option value="his_04_contemporanea.json">Hist 04: Mundo Contemporâneo, Revoluções e Guerras</option>
-        </optgroup>
-
-        <!-- GEOGRAFIA -->
-        <optgroup label="🌍 GEOGRAFIA">
-          <option value="geo_01_fisica.json">Geo 01: Geografia Física (Geologia, Relevo, Clima, Solo)</option>
-          <option value="geo_02_populacao.json">Geo 02: Demografia, Migrações e Estrutura Social</option>
-          <option value="geo_03_economia.json">Geo 03: Espaço Agrário, Industrialização e Urbanização</option>
-          <option value="geo_04_geopolitica.json">Geo 04: Geopolítica, Estado-Nação e Ordem Mundial</option>
-          <option value="geo_05_cartografia.json">Geo 05: Cartografia, Fusos e Sensoriamento Remoto</option>
-        </optgroup>
-
+        <option value="">Carregando sumário...</option>
       </select>
     </div>
 
-    <!-- Barra de Progresso da Aula -->
-    <div class="bg-med-500 p-4 rounded-xl border border-med-400/30 space-y-2 shadow-md">
-      <div class="flex justify-between text-xs font-semibold text-med-200">
-        <span>PROGRESSO DO MÓDULO</span>
-        <span id="progress-percent">0%</span>
+    <!-- Título do Módulo e Vídeo -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2 space-y-4">
+        <div class="bg-med-500 border border-med-400/30 rounded-xl overflow-hidden shadow-2xl aspect-video relative">
+          <iframe id="video-player" class="w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div class="bg-med-500 p-4 rounded-xl border border-med-400/30">
+          <h2 id="lesson-title" class="text-lg font-bold text-med-100">A carregar...</h2>
+          <p id="lesson-desc" class="text-sm text-med-200/90 mt-1"></p>
+        </div>
       </div>
-      <div class="w-full bg-med-900 h-3 rounded-full overflow-hidden border border-med-400/20">
-        <div id="lesson-progress-bar" class="bg-gradient-to-r from-med-400 to-med-300 h-full w-0 transition-all duration-500"></div>
+
+      <!-- Secção de Balões de Leitura -->
+      <div class="space-y-4">
+        <h3 class="font-bold text-med-300 text-sm flex items-center gap-2">
+          💬 BALÕES DE LEITURA (CLIQUE PARA ABRIR):
+        </h3>
+        
+        <!-- Lista de Balões/Botões -->
+        <div id="balloons-list" class="grid grid-cols-1 gap-2">
+          <p class="text-xs text-med-200">Selecione uma aula acima para carregar os balões.</p>
+        </div>
       </div>
     </div>
 
-    <!-- Seção do Vídeo e Exercícios -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Área de Exibição do Balão Ativo (Texto + Pergunta) -->
+    <div id="active-balloon-container" class="hidden bg-med-500 p-6 rounded-xl border-2 border-med-300/50 space-y-6 shadow-2xl transition-all">
       
-      <!-- Vídeo da Aula -->
-      <div class="lg:col-span-2 space-y-4">
-        <div class="bg-med-500 border border-med-400/30 rounded-xl overflow-hidden shadow-2xl aspect-video relative">
-          <iframe id="video-player" class="w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-        <div class="bg-med-500 p-4 rounded-xl border border-med-400/30">
-          <h2 id="lesson-title" class="text-lg font-bold text-med-100">Carregando Módulo...</h2>
-          <p id="lesson-desc" class="text-sm text-med-200/90 mt-1">Selecione uma disciplina e assunto no menu acima.</p>
-        </div>
+      <!-- Cabeçalho do Balão -->
+      <div class="border-b border-med-400/30 pb-3 flex justify-between items-center">
+        <h3 id="balloon-title" class="text-lg font-bold text-med-300 flex items-center gap-2"></h3>
+        <span class="text-xs bg-med-400/20 text-med-200 px-3 py-1 rounded-full border border-med-300/30">Fragmento de Leitura</span>
       </div>
 
-      <!-- Área Interativa de Questões -->
-      <div class="space-y-4">
-        <div id="quiz-container" class="bg-med-500 p-5 rounded-xl border border-med-400/30 space-y-4 shadow-xl">
-          <p class="text-med-200 text-sm">Selecione uma aula para carregar os exercícios.</p>
-        </div>
-        <div id="feedback" class="hidden"></div>
+      <!-- Conteúdo Teórico do Balão -->
+      <div id="balloon-text" class="text-sm md:text-base text-med-100 leading-relaxed bg-med-900/60 p-4 rounded-lg border border-med-400/20"></div>
+
+      <!-- Pergunta Associada ao Balão -->
+      <div class="space-y-4 bg-med-900 p-5 rounded-xl border border-med-400/30">
+        <p id="balloon-question" class="font-semibold text-sm md:text-base text-med-300"></p>
+        <div id="balloon-options" class="space-y-2"></div>
+        
+        <button id="btn-submit-balloon" onclick="validarRespostaBalao()" class="w-full py-2.5 bg-gradient-to-r from-med-400 to-med-300 hover:brightness-110 font-bold rounded-lg text-med-900 shadow-lg transition-all text-sm mt-2">
+          🩺 Confirmar Diagnóstico
+        </button>
       </div>
 
+      <!-- Feedback / Gabarito Comentado -->
+      <div id="balloon-feedback" class="hidden"></div>
     </div>
 
   </main>
 
-  <!-- Rodapé -->
-  <footer class="border-t border-med-500 bg-med-900 py-6 text-center text-xs text-med-200/60">
-    MedVest UFPR &copy; 2026 - Preparatório para Medicina e Vestibulares
-  </footer>
-
-  <!-- Lógica JavaScript -->
   <script>
     let xpAtual = parseInt(localStorage.getItem('medvest_xp') || '0');
-    let acertosAulaAtual = 0;
-    let totalFragmentos = 0;
     let aulaDados = null;
+    let balaoAtual = null;
 
     function atualizarInterfaceGamificada() {
       document.getElementById('user-xp').innerText = `${xpAtual} XP`;
@@ -231,13 +145,39 @@
       document.getElementById('user-level').innerText = nivel;
     }
 
+    async function carregarSumario() {
+      const select = document.getElementById('lesson-select');
+      try {
+        const res = await fetch('sumario.json');
+        if (!res.ok) throw new Error();
+        const disciplinas = await res.json();
+
+        select.innerHTML = "";
+        disciplinas.forEach(disc => {
+          const optgroup = document.createElement('optgroup');
+          optgroup.label = disc.disciplina;
+          disc.modulos.forEach(mod => {
+            const option = document.createElement('option');
+            option.value = mod.arquivo;
+            option.innerText = mod.titulo;
+            optgroup.appendChild(option);
+          });
+          select.appendChild(optgroup);
+        });
+
+        if (select.value) carregarAula(select.value);
+      } catch (err) {
+        select.innerHTML = `<option value="">⚠️ Erro ao carregar sumario.json</option>`;
+      }
+    }
+
     async function carregarAula(nomeArquivo) {
-      const feedback = document.getElementById('feedback');
-      feedback.className = "hidden";
+      if (!nomeArquivo) return;
+      document.getElementById('active-balloon-container').classList.add('hidden');
       
       try {
         const resposta = await fetch(nomeArquivo);
-        if (!resposta.ok) throw new Error("Arquivo JSON ainda não foi criado.");
+        if (!resposta.ok) throw new Error();
         aulaDados = await resposta.json();
 
         document.getElementById('lesson-title').innerText = aulaDados.titulo || "Módulo de Estudo";
@@ -247,89 +187,97 @@
           document.getElementById('video-player').src = `https://www.youtube.com/embed/${aulaDados.youtube_id}`;
         }
 
-        const quizContainer = document.getElementById('quiz-container');
-        quizContainer.innerHTML = "";
-
-        if (aulaDados.questoes && aulaDados.questoes.length > 0) {
-          totalFragmentos = aulaDados.questoes.length;
-          acertosAulaAtual = 0;
-          atualizarProgresso();
-
-          aulaDados.questoes.forEach((q, index) => {
-            const qEl = document.createElement('div');
-            qEl.className = "space-y-3 bg-med-900 p-4 rounded-lg border border-med-400/30";
-            
-            let ophtml = q.opcoes.map((opt, i) => `
-              <label class="flex items-center gap-2 p-2 rounded bg-med-500/60 hover:bg-med-400/30 cursor-pointer text-xs md:text-sm text-med-100 transition-colors border border-transparent hover:border-med-300/40">
-                <input type="radio" name="q_${index}" value="${i}" class="text-med-400 focus:ring-med-300">
-                <span>${opt}</span>
-              </label>
-            `).join('');
-
-            qEl.innerHTML = `
-              <p class="font-semibold text-sm text-med-300">Questão ${index + 1}: ${q.pergunta}</p>
-              <div class="space-y-1.5">${ophtml}</div>
-            `;
-            quizContainer.appendChild(qEl);
-          });
-
-          const btnVerificar = document.createElement('button');
-          btnVerificar.className = "w-full py-2.5 bg-gradient-to-r from-med-400 to-med-300 hover:brightness-110 font-bold rounded-lg text-med-900 shadow-lg shadow-med-400/20 transition-all text-sm mt-2";
-          btnVerificar.innerText = "🩺 Confirmar Diagnóstico / Respostas";
-          btnVerificar.onclick = verificarRespostas;
-          quizContainer.appendChild(btnVerificar);
-
-        } else {
-          quizContainer.innerHTML = `<p class="text-med-200 text-sm">Esta aula é teórica/demonstrativa. Assista ao vídeo acima!</p>`;
-        }
+        renderizarBaloes();
 
       } catch (erro) {
         document.getElementById('lesson-title').innerText = "Módulo Em Breve";
-        document.getElementById('lesson-desc').innerText = `O módulo (${nomeArquivo}) será gerado no Google Colab.`;
+        document.getElementById('lesson-desc').innerText = `O ficheiro ${nomeArquivo} ainda precisa ser criado no GitHub.`;
         document.getElementById('video-player').src = "";
-        document.getElementById('quiz-container').innerHTML = `<p class="text-med-300 text-sm">⚠️ Módulo em desenvolvimento. Assim que criar o arquivo <b>${nomeArquivo}</b> no GitHub, ele aparecerá aqui!</p>`;
+        document.getElementById('balloons-list').innerHTML = `<p class="text-med-300 text-xs">⚠️ Ficheiro <b>${nomeArquivo}</b> não encontrado no repositório.</p>`;
       }
     }
 
-    function verificarRespostas() {
-      if (!aulaDados || !aulaDados.questoes) return;
+    function renderizarBaloes() {
+      const list = document.getElementById('balloons-list');
+      list.innerHTML = "";
+
+      if (!aulaDados.baloes || aulaDados.baloes.length === 0) {
+        list.innerHTML = `<p class="text-xs text-med-200">Nenhum balão de leitura cadastrado neste módulo.</p>`;
+        return;
+      }
+
+      aulaDados.baloes.forEach((b, index) => {
+        const btn = document.createElement('button');
+        btn.className = "w-full text-left p-3 rounded-lg bg-med-900 hover:bg-med-400/20 border border-med-400/30 text-med-100 font-medium text-xs md:text-sm flex items-center justify-between transition-all group";
+        btn.onclick = () => abrirBalao(index);
+        btn.innerHTML = `
+          <span class="flex items-center gap-2">💬 <span>${b.titulo_balao}</span></span>
+          <span class="text-med-300 group-hover:translate-x-1 transition-transform">➔</span>
+        `;
+        list.appendChild(btn);
+      });
+    }
+
+    function abrirBalao(index) {
+      balaoAtual = aulaDados.baloes[index];
       
-      let acertos = 0;
-      aulaDados.questoes.forEach((q, index) => {
-        const selected = document.querySelector(`input[name="q_${index}"]:checked`);
-        if (selected && parseInt(selected.value) === q.correta) {
-          acertos++;
-        }
+      document.getElementById('balloon-title').innerText = balaoAtual.titulo_balao;
+      document.getElementById('balloon-text').innerText = balaoAtual.explicacao;
+      document.getElementById('balloon-question').innerText = balaoAtual.pergunta;
+
+      const optionsContainer = document.getElementById('balloon-options');
+      optionsContainer.innerHTML = "";
+
+      balaoAtual.opcoes.forEach((opt, i) => {
+        const label = document.createElement('label');
+        label.className = "flex items-center gap-3 p-3 rounded-lg bg-med-500/60 hover:bg-med-400/30 cursor-pointer text-xs md:text-sm text-med-100 transition-colors border border-transparent hover:border-med-300/40";
+        label.innerHTML = `
+          <input type="radio" name="balloon_option" value="${i}" class="text-med-400 focus:ring-med-300">
+          <span>${opt}</span>
+        `;
+        optionsContainer.appendChild(label);
       });
 
-      acertosAulaAtual = acertos;
-      atualizarProgresso();
+      document.getElementById('balloon-feedback').className = "hidden";
+      const container = document.getElementById('active-balloon-container');
+      container.classList.remove('hidden');
+      container.scrollIntoView({ behavior: 'smooth' });
+    }
 
-      const feedback = document.getElementById('feedback');
-      if (acertos === totalFragmentos && totalFragmentos > 0) {
-        feedback.className = "p-4 rounded-xl text-sm font-bold bg-med-900 border border-med-300 text-med-300 shadow-lg";
-        feedback.innerText = `🎉 Diagnóstico Perfeito: ${acertos}/${totalFragmentos} acertos (+50 XP)!`;
-        xpAtual += 50;
+    function validarRespostaBalao() {
+      if (!balaoAtual) return;
+
+      const selected = document.querySelector('input[name="balloon_option"]:checked');
+      const feedback = document.getElementById('balloon-feedback');
+
+      if (!selected) {
+        alert("Por favor, selecione uma opção antes de confirmar.");
+        return;
+      }
+
+      const valor = parseInt(selected.value);
+      if (valor === balaoAtual.correta) {
+        feedback.className = "p-4 rounded-xl text-xs md:text-sm bg-med-900 border border-med-300 text-med-300 shadow-lg space-y-2";
+        feedback.innerHTML = `
+          <p class="font-bold text-sm">🎉 Diagnóstico Correto (+20 XP)!</p>
+          <p class="text-med-100">${balaoAtual.gabarito_comentado || "Excelente raciocínio!"}</p>
+        `;
+        xpAtual += 20;
         localStorage.setItem('medvest_xp', xpAtual);
         atualizarInterfaceGamificada();
       } else {
-        feedback.className = "p-4 rounded-xl text-sm font-bold bg-med-900 border border-amber-400/50 text-amber-300 shadow-lg";
-        feedback.innerText = `⚠️ Você acertou ${acertos} de ${totalFragmentos}. Revise os trechos da aula e tente novamente.`;
+        feedback.className = "p-4 rounded-xl text-xs md:text-sm bg-med-900 border border-amber-400/50 text-amber-300 shadow-lg space-y-2";
+        feedback.innerHTML = `
+          <p class="font-bold text-sm">⚠️ Hipótese Incorreta.</p>
+          <p class="text-med-100">${balaoAtual.gabarito_comentado || "Revise o texto do balão acima e tente novamente."}</p>
+        `;
       }
+
+      feedback.classList.remove('hidden');
     }
 
-    function atualizarProgresso() {
-      const pct = totalFragmentos > 0 ? Math.round((acertosAulaAtual / totalFragmentos) * 100) : 0;
-      document.getElementById('lesson-progress-bar').style.width = `${pct}%`;
-      document.getElementById('progress-percent').innerText = `${pct}%`;
-    }
-
-    // Inicialização
     atualizarInterfaceGamificada();
-    const select = document.getElementById('lesson-select');
-    if (select && select.value) {
-      carregarAula(select.value);
-    }
+    carregarSumario();
   </script>
 </body>
 </html>
