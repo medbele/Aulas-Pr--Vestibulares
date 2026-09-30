@@ -8,6 +8,11 @@
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   
+  <!-- Firebase SDKs para Autenticação e Base de Dados -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
   <!-- Configuração da Paleta Visual Própria (ApexMed) -->
   <script>
     tailwind.config = {
@@ -38,15 +43,84 @@
 </head>
 <body class="bg-apex-950 text-apex-100 min-h-screen flex flex-col font-sans selection:bg-apex-400 selection:text-apex-950">
 
+  <!-- MODAL DE AUTENTICAÇÃO E CADASTRO -->
+  <div id="modal-auth" class="fixed inset-0 z-50 bg-apex-950/90 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-apex-surface border border-apex-border rounded-3xl p-6 md:p-8 max-w-md w-full shadow-2xl space-y-6">
+      <div class="text-center space-y-2">
+        <div class="inline-flex p-3 bg-apex-400/20 border border-apex-300/40 rounded-2xl text-apex-300 text-2xl shadow-inner mb-2">⚡</div>
+        <h2 class="text-xl font-black text-apex-50">Bem-vindo ao Caminho da Medicina</h2>
+        <p class="text-xs text-apex-300">Faça login para aceder à plataforma e sincronizar os seus estudos.</p>
+      </div>
+
+      <!-- Passo 1: Botões de Login Social -->
+      <div id="auth-step-social" class="space-y-3">
+        <button onclick="loginSocial('google')" class="w-full py-3 px-4 bg-apex-900 hover:bg-apex-card border border-apex-border rounded-xl font-bold text-apex-100 flex items-center justify-center gap-3 transition-all text-sm shadow">
+          <span>🌐 Continuar com Google</span>
+        </button>
+        <button onclick="loginSocial('facebook')" class="w-full py-3 px-4 bg-apex-900 hover:bg-apex-card border border-apex-border rounded-xl font-bold text-apex-100 flex items-center justify-center gap-3 transition-all text-sm shadow">
+          <span>📘 Continuar com Facebook</span>
+        </button>
+      </div>
+
+      <!-- Passo 2: Formulário Complementar (Idade, Localização, Gênero) -->
+      <div id="auth-step-dados" class="space-y-4 hidden">
+        <div class="bg-apex-900 p-3 rounded-xl border border-apex-border text-xs text-apex-300">
+          Por favor, preencha os dados abaixo para concluirmos o seu registo na plataforma.
+        </div>
+        <div class="space-y-3">
+          <div>
+            <label class="block text-xs font-semibold text-apex-300 mb-1">Idade</label>
+            <input type="number" id="input-idade" placeholder="Ex: 22" class="w-full bg-apex-900 border border-apex-border rounded-xl px-4 py-2.5 text-apex-100 text-xs focus:outline-none focus:ring-2 focus:ring-apex-400">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-apex-300 mb-1">Localização (Cidade - Estado - País)</label>
+            <input type="text" id="input-localizacao" placeholder="Ex: São Paulo - SP - Brasil" class="w-full bg-apex-900 border border-apex-border rounded-xl px-4 py-2.5 text-apex-100 text-xs focus:outline-none focus:ring-2 focus:ring-apex-400">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-apex-300 mb-1">Gênero</label>
+            <select id="select-genero" class="w-full bg-apex-900 border border-apex-border rounded-xl px-4 py-2.5 text-apex-100 text-xs focus:outline-none focus:ring-2 focus:ring-apex-400">
+              <option value="Feminino">Feminino</option>
+              <option value="Masculino">Masculino</option>
+              <option value="Prefiro não dizer">Prefiro não dizer</option>
+            </select>
+          </div>
+          <button onclick="finalizarCadastroPublico()" class="w-full py-3 bg-apex-500 hover:bg-apex-600 font-bold rounded-xl text-apex-950 transition-all text-xs shadow-lg mt-2">
+            Entrar na Plataforma ➔
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL DE BOAS-VINDAS PERSONALIZADO -->
+  <div id="modal-boas-vindas" class="fixed inset-0 z-50 bg-apex-950/90 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-apex-surface border border-apex-border rounded-3xl p-8 max-w-md w-full shadow-2xl text-center space-y-6 animate-fadeIn">
+      <div class="inline-flex p-4 bg-apex-400/20 border border-apex-300/40 rounded-3xl text-apex-300 text-3xl shadow-inner">🎉</div>
+      <div class="space-y-3">
+        <h2 id="mensagem-boas-vindas" class="text-xl md:text-2xl font-black text-apex-50">Seja bem-vindo(a)!</h2>
+        <p id="texto-boas-vindas" class="text-xs text-apex-300 leading-relaxed">
+          O seu perfil foi configurado com sucesso. É um prazer imenso ter-lhe connosco nesta jornada de dedicação e excelência rumo à medicina. Prepare-se para elevar o seu nível de estudos!
+        </p>
+        <div class="pt-2 border-t border-apex-border/60">
+          <p class="text-[11px] text-apex-300/90 leading-relaxed">
+            Caso tenha alguma dúvida, sugestão ou crítica construtiva, sinta-se totalmente à vontade para entrar em contacto diretamente comigo pelo direct do Instagram: <a href="https://instagram.com/med_bele" target="_blank" class="text-apex-400 font-bold hover:underline">@med_bele</a>. O seu feedback é muito importante para melhorarmos sempre! 💙
+          </p>
+        </div>
+      </div>
+      <button onclick="fecharBoasVindas()" class="w-full py-3 bg-apex-500 hover:bg-apex-600 font-bold rounded-xl text-apex-950 transition-all text-sm shadow-lg">
+        Começar a Estudar 🚀
+      </button>
+    </div>
+  </div>
+
   <!-- Cabeçalho Principal -->
-  <header class="border-b border-apex-border bg-apex-surface/90 backdrop-blur sticky top-0 z-50 px-4 py-3 shadow-xl">
+  <header class="border-b border-apex-border bg-apex-surface/90 backdrop-blur sticky top-0 z-40 px-4 py-3 shadow-xl">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
       
-      <!-- Logotipo (Clique 3 vezes para aceder ao Painel Administrativo Oculto) -->
+      <!-- Logotipo (Clique 3 vezes para Gerador IA) -->
       <div class="flex items-center gap-3 cursor-pointer select-none" onclick="tentarAcederAdmin()" title="Clique 3x para Área Restrita">
-        <div class="p-2.5 bg-apex-400/20 border border-apex-300/40 rounded-2xl text-apex-300 text-xl shadow-inner">
-          ⚡
-        </div>
+        <div class="p-2.5 bg-apex-400/20 border border-apex-300/40 rounded-2xl text-apex-300 text-xl shadow-inner">⚡</div>
         <div>
           <h1 class="font-black text-lg md:text-xl text-apex-50 tracking-wide flex items-center gap-2">
             APEX<span class="text-apex-400">MED</span> 
@@ -58,33 +132,21 @@
 
       <!-- Barra de Abas de Navegação -->
       <nav class="flex items-center gap-1 bg-apex-900 p-1 rounded-xl border border-apex-border overflow-x-auto max-w-full">
-        <button onclick="mudarAba('dashboard')" id="nav-dashboard" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-apex-500 text-apex-950 flex items-center gap-1.5 shadow">
-          📊 Início
-        </button>
-        <button onclick="mudarAba('aulas')" id="nav-aulas" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-apex-300 hover:bg-apex-card flex items-center gap-1.5">
-          📚 Aulas
-        </button>
+        <button onclick="mudarAba('dashboard')" id="nav-dashboard" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-apex-500 text-apex-950 flex items-center gap-1.5 shadow">📊 Início</button>
+        <button onclick="mudarAba('aulas')" id="nav-aulas" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-apex-300 hover:bg-apex-card flex items-center gap-1.5">📚 Aulas</button>
         <button onclick="mudarAba('erros')" id="nav-erros" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-apex-300 hover:bg-apex-card flex items-center gap-1.5">
           ⚠️ Caderno de Erros <span id="badge-erros" class="bg-red-500 text-white px-1.5 py-0.2 rounded-full text-[10px]">0</span>
         </button>
       </nav>
 
-      <!-- Gamificação / Estatísticas do Aluno -->
+      <!-- Gamificação e Perfil do Utilizador -->
       <div class="flex items-center gap-3 bg-apex-900 px-4 py-2 rounded-xl border border-apex-border text-xs">
-        <div class="flex items-center gap-1">
-          <span>🔥</span>
-          <span id="user-streak" class="font-bold text-amber-400">0 dias</span>
-        </div>
+        <div class="flex items-center gap-1"><span>🔥</span><span id="user-streak" class="font-bold text-amber-400">0 dias</span></div>
         <div class="h-4 w-px bg-apex-border"></div>
-        <div class="flex items-center gap-1">
-          <span>⚡</span>
-          <span id="user-xp" class="font-bold text-apex-300">0 XP</span>
-        </div>
+        <div class="flex items-center gap-1"><span>⚡</span><span id="user-xp" class="font-bold text-apex-300">0 XP</span></div>
         <div class="h-4 w-px bg-apex-border"></div>
-        <div class="flex items-center gap-1">
-          <span>🪙</span>
-          <span id="user-coins" class="font-bold text-yellow-300">0</span>
-        </div>
+        <div class="flex items-center gap-1"><span>🪙</span><span id="user-coins" class="font-bold text-yellow-300">0</span></div>
+        <button onclick="logoutUsuario()" title="Terminar Sessão" class="ml-2 text-red-400 hover:text-red-300 text-sm">⎋</button>
       </div>
     </div>
   </header>
@@ -119,9 +181,9 @@
       </div>
 
       <div class="bg-apex-surface p-6 rounded-2xl border border-apex-border shadow-xl space-y-4">
-        <h3 class="font-bold text-lg text-apex-100 flex items-center gap-2">🚀 Bem-vindo ao seu Ambiente Clínico</h3>
+        <h3 class="font-bold text-lg text-apex-100 flex items-center gap-2">🚀 Bem-vindo ao seu Caminho da Medicina</h3>
         <p class="text-sm text-apex-300 leading-relaxed">
-          Selecione a aba <strong class="text-apex-100">Aulas</strong> para explorar o catálogo de disciplinas, escolher o seu tópico e iniciar os balões de leitura analítica.
+          Selecione a aba <strong class="text-apex-100">Aulas</strong> para explorar o catálogo de disciplinas ou aceda ao <strong class="text-apex-100">Caderno de Erros</strong> para treinar os seus flashcards por pastas e baralhos aleatórios.
         </p>
         <button onclick="mudarAba('aulas')" class="px-5 py-2.5 bg-apex-500 hover:bg-apex-600 text-apex-950 font-bold rounded-xl transition-all shadow-lg text-sm">
           Ir para Catálogo de Disciplinas ➔
@@ -130,38 +192,30 @@
     </section>
 
     <!-- ABA: AULAS (CATÁLOGO DE DISCIPLINAS -> MÓDULOS -> PLAYER) -->
-    <section id="tab-aulas" class="space-y-6">
+    <section id="tab-aulas" class="hidden space-y-6">
       
-      <!-- PASSO 1: Grade de Disciplinas (Geral) -->
+      <!-- PASSO 1: Grade de Disciplinas -->
       <div id="view-disciplinas" class="space-y-4">
         <div class="bg-apex-surface p-5 rounded-2xl border border-apex-border shadow-lg">
           <h2 class="text-xl font-bold text-apex-50 flex items-center gap-2">📚 Catálogo de Disciplinas Clínicas</h2>
           <p class="text-sm text-apex-300 mt-1">Selecione uma disciplina para visualizar os módulos e tópicos de estudo disponíveis.</p>
         </div>
-        <div id="disciplinas-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          <!-- Preenchido dinamicamente via script -->
-        </div>
+        <div id="disciplinas-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
       </div>
 
-      <!-- PASSO 2: Lista de Módulos da Disciplina Selecionada -->
+      <!-- PASSO 2: Lista de Módulos da Disciplina -->
       <div id="view-modulos" class="hidden space-y-4">
         <div class="flex items-center justify-between bg-apex-surface p-4 rounded-2xl border border-apex-border shadow-lg">
-          <button onclick="voltarParaDisciplinas()" class="px-4 py-2 bg-apex-900 hover:bg-apex-card text-apex-300 border border-apex-border rounded-xl text-xs font-bold transition-all flex items-center gap-2">
-            ⬅ Voltar às Disciplinas
-          </button>
+          <button onclick="voltarParaDisciplinas()" class="px-4 py-2 bg-apex-900 hover:bg-apex-card text-apex-300 border border-apex-border rounded-xl text-xs font-bold transition-all flex items-center gap-2">⬅ Voltar às Disciplinas</button>
           <h2 id="titulo-disciplina-selecionada" class="text-base md:text-lg font-bold text-apex-50">Nome da Disciplina</h2>
         </div>
-        <div id="modulos-lista-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Preenchido dinamicamente via script -->
-        </div>
+        <div id="modulos-lista-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
       </div>
 
       <!-- PASSO 3: Sala de Aula / Balões de Leitura -->
       <div id="view-sala-aula" class="hidden space-y-6">
         <div class="flex items-center justify-between bg-apex-surface p-4 rounded-2xl border border-apex-border shadow-lg">
-          <button onclick="voltarParaModulos()" class="px-4 py-2 bg-apex-900 hover:bg-apex-card text-apex-300 border border-apex-border rounded-xl text-xs font-bold transition-all flex items-center gap-2">
-            ⬅ Voltar aos Módulos
-          </button>
+          <button onclick="voltarParaModulos()" class="px-4 py-2 bg-apex-900 hover:bg-apex-card text-apex-300 border border-apex-border rounded-xl text-xs font-bold transition-all flex items-center gap-2">⬅ Voltar aos Módulos</button>
           <span id="breadcrumb-aula" class="text-xs text-apex-300 font-medium">Disciplina ➔ Módulo</span>
         </div>
 
@@ -177,12 +231,8 @@
           </div>
 
           <div class="space-y-4">
-            <h3 class="font-bold text-apex-300 text-xs tracking-wider uppercase flex items-center gap-2">
-              💬 Balões de Leitura Ativos:
-            </h3>
-            <div id="balloons-list" class="grid grid-cols-1 gap-2.5">
-              <p class="text-xs text-apex-300">Nenhum balão carregado.</p>
-            </div>
+            <h3 class="font-bold text-apex-300 text-xs tracking-wider uppercase flex items-center gap-2">💬 Balões de Leitura Ativos:</h3>
+            <div id="balloons-list" class="grid grid-cols-1 gap-2.5"><p class="text-xs text-apex-300">Nenhum balão carregado.</p></div>
           </div>
         </div>
 
@@ -198,27 +248,69 @@
           <div class="space-y-4 bg-apex-900 p-5 rounded-xl border border-apex-border">
             <p id="balloon-question" class="font-semibold text-sm md:text-base text-apex-300"></p>
             <div id="balloon-options" class="space-y-2"></div>
-            
-            <button id="btn-submit-balloon" onclick="validarRespostaBalao()" class="w-full py-3 bg-apex-500 hover:bg-apex-600 font-bold rounded-xl text-apex-950 shadow-lg transition-all text-sm mt-3">
-              🩺 Submeter Diagnóstico
-            </button>
+            <button id="btn-submit-balloon" onclick="validarRespostaBalao()" class="w-full py-3 bg-apex-500 hover:bg-apex-600 font-bold rounded-xl text-apex-950 shadow-lg transition-all text-sm mt-3">🩺 Submeter Diagnóstico</button>
           </div>
-
           <div id="balloon-feedback" class="hidden"></div>
         </div>
       </div>
 
     </section>
 
-    <!-- ABA: CADERNO DE ERROS -->
+    <!-- ABA: CADERNO DE ERROS (FLASHCARDS POR PASTAS E BARALHO ALEATÓRIO) -->
     <section id="tab-erros" class="hidden space-y-6">
-      <div class="bg-apex-surface p-6 rounded-2xl border border-apex-border shadow-xl space-y-3">
-        <h2 class="text-lg font-bold text-apex-50 flex items-center gap-2">⚠ Caderno de Erros e Revisão Ativa</h2>
-        <p class="text-sm text-apex-300">Questões respondidas incorretamente nos balões acumulam-se aqui para repetição espaçada e fixação de conteúdo.</p>
+      <div class="bg-apex-surface p-6 rounded-2xl border border-apex-border shadow-xl space-y-4">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <h2 class="text-lg font-bold text-apex-50 flex items-center gap-2">⚠ Caderno de Erros em Formato de Flashcards</h2>
+            <p class="text-sm text-apex-300 mt-1">Questões erradas organizadas automaticamente por pastas de disciplinas para repetição espaçada.</p>
+          </div>
+          <button onclick="iniciarBaralhoAleatorio()" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 font-bold text-apex-950 rounded-xl transition-all shadow-lg text-xs flex items-center gap-2">
+            🔀 Iniciar Baralho Aleatório Geral
+          </button>
+        </div>
       </div>
 
-      <div id="erros-list" class="space-y-4">
-        <p class="text-sm text-apex-300 text-center py-10">Parabéns! Nenhum erro registado no momento.</p>
+      <!-- Visão Geral de Pastas de Disciplinas -->
+      <div id="erros-pastas-view" class="space-y-4">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-apex-300">Pastas de Disciplinas</h3>
+        <div id="grid-pastas-erros" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      </div>
+
+      <!-- Visão do Flashcard Ativo (Modo Estudo por Pasta ou Aleatório) -->
+      <div id="flashcard-study-view" class="hidden space-y-4">
+        <div class="flex items-center justify-between bg-apex-surface p-4 rounded-2xl border border-apex-border">
+          <button onclick="voltarParaPastasErros()" class="px-4 py-2 bg-apex-900 hover:bg-apex-card text-apex-300 border border-apex-border rounded-xl text-xs font-bold transition-all">⬅ Voltar às Pastas</button>
+          <span id="flashcard-counter" class="text-xs font-bold text-apex-300">Card 1 de 5</span>
+        </div>
+
+        <div class="bg-apex-surface p-8 rounded-3xl border-2 border-apex-border shadow-2xl space-y-6 text-center max-w-2xl mx-auto relative min-h-[320px] flex flex-col justify-between">
+          <div class="flex justify-between items-center text-xs text-apex-300 font-semibold border-b border-apex-border pb-3">
+            <span id="fc-disciplina" class="px-3 py-1 rounded-full bg-apex-900 border border-apex-border">Disciplina</span>
+            <span id="fc-modo" class="text-amber-400">Modo Estudo</span>
+          </div>
+
+          <div class="py-6 space-y-4">
+            <h4 id="fc-pergunta" class="text-base md:text-lg font-bold text-apex-50 leading-relaxed">Pergunta do Flashcard</h4>
+            <div id="fc-resposta-container" class="hidden bg-apex-900 p-4 rounded-xl border border-apex-400/40 text-apex-200 text-sm text-left space-y-2 mt-4 animate-fadeIn">
+              <p class="font-bold text-apex-400 text-xs uppercase tracking-wider">Gabarito Comentado:</p>
+              <p id="fc-resposta-texto">Explicação detalhada...</p>
+            </div>
+          </div>
+
+          <div class="space-y-3 pt-4 border-t border-apex-border">
+            <button id="btn-revelar-fc" onclick="revelarRespostaFlashcard()" class="w-full py-3 bg-apex-500 hover:bg-apex-600 font-bold text-apex-950 rounded-xl text-sm transition-all shadow-lg">
+              🔍 Revelar Gabarito
+            </button>
+            <div id="fc-botoes-feedback" class="hidden grid grid-cols-2 gap-3">
+              <button onclick="responderFlashcard(false)" class="py-3 bg-red-500/20 border border-red-500/40 hover:bg-red-500/30 text-red-300 font-bold rounded-xl text-xs transition-all">
+                ❌ Errei / Continuar Revendo
+              </button>
+              <button onclick="responderFlashcard(true)" class="py-3 bg-apex-400/20 border border-apex-300/40 hover:bg-apex-400/30 text-apex-300 font-bold rounded-xl text-xs transition-all">
+                ✅ Dominei o Conceito!
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -229,7 +321,7 @@
           <h2 class="text-lg font-bold text-apex-50 flex items-center gap-2">🔒 Painel Restrito - Gerador Automático de Módulos</h2>
           <button onclick="mudarAba('dashboard')" class="text-xs text-apex-300 hover:text-apex-100 bg-apex-900 px-3 py-1.5 rounded-lg border border-apex-border">✕ Fechar Painel</button>
         </div>
-        <p class="text-sm text-apex-300">Cole a transcrição de um áudio, resumo de aula ou trecho de livro abaixo. O sistema estruturará os balões de leitura e as questões de fixação instantaneamente para a sua base.</p>
+        <p class="text-sm text-apex-300">Cole a transcrição de um áudio, resumo de aula ou trecho de livro abaixo. O sistema estruturará os balões de leitura instantaneamente.</p>
         
         <div class="space-y-3">
           <select id="gen-disciplina" class="w-full bg-apex-900 border border-apex-border rounded-xl px-4 py-3 text-apex-100 text-sm focus:outline-none focus:ring-2 focus:ring-apex-400">
@@ -252,10 +344,23 @@
   </main>
 
   <footer class="border-t border-apex-border bg-apex-surface py-6 text-center text-xs text-apex-300/60">
-    ApexMed Clinical Learning &copy; 2026 - Todos os direitos reservados
+    Caminho da Medicina (ApexMed) &copy; 2026 - Todos os direitos reservados
   </footer>
 
   <script>
+    // Configuração Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyDummyKeyForApexMedPlatform",
+      authDomain: "caminhodamedicina.firebaseapp.com",
+      projectId: "caminhodamedicina"
+    };
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const auth = firebase.auth();
+
+    // Estados da Aplicação
+    let usuarioAtual = null;
     let xpAtual = parseInt(localStorage.getItem('apex_xp') || '0');
     let moedasAtual = parseInt(localStorage.getItem('apex_coins') || '10');
     let streakAtual = parseInt(localStorage.getItem('apex_streak') || '1');
@@ -268,6 +373,103 @@
     let balaoAtual = null;
     let indexBalaoAtual = null;
     let cliquesLogo = 0;
+
+    let flashcardsAtivos = [];
+    let indexCardAtual = 0;
+    let modoFlashcardAtual = 'pasta';
+
+    // ================= AUTENTICAÇÃO E CADASTRO =================
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        usuarioAtual = user;
+        verificarCadastroCompleto(user);
+      } else {
+        document.getElementById('modal-auth').classList.remove('hidden');
+        document.getElementById('auth-step-social').classList.remove('hidden');
+        document.getElementById('auth-step-dados').classList.add('hidden');
+      }
+    });
+
+    function loginSocial(provedor) {
+      const provider = provedor === 'google' ? new firebase.auth.GoogleAuthProvider() : new firebase.auth.FacebookAuthProvider();
+      auth.signInWithPopup(provider).then(result => {
+        const dadosSalvos = localStorage.getItem('apex_user_dados_' + result.user.uid);
+        if (dadosSalvos) {
+          document.getElementById('modal-auth').classList.add('hidden');
+          iniciarPlataforma();
+        } else {
+          document.getElementById('auth-step-social').classList.add('hidden');
+          document.getElementById('auth-step-dados').classList.remove('hidden');
+        }
+      }).catch(err => {
+        alert("Erro na autenticação: " + err.message);
+      });
+    }
+
+    function finalizarCadastroPublico() {
+      const idade = document.getElementById('input-idade').value.trim();
+      const localizacao = document.getElementById('input-localizacao').value.trim();
+      const genero = document.getElementById('select-genero').value;
+
+      if (!idade || !localizacao) {
+        alert("Por favor, preencha a sua idade e a sua localização.");
+        return;
+      }
+
+      const dadosUsuario = {
+        nome: usuarioAtual.displayName || 'Estudante',
+        email: usuarioAtual.email,
+        idade,
+        localizacao,
+        genero
+      };
+
+      localStorage.setItem('apex_user_dados_' + usuarioAtual.uid, JSON.stringify(dadosUsuario));
+
+      document.getElementById('modal-auth').classList.add('hidden');
+
+      // Aplicação dos textos de boas-vindas com base no gênero seleccionado
+      const msgBoasVindas = document.getElementById('mensagem-boas-vindas');
+      const textoBoasVindas = document.getElementById('texto-boas-vindas');
+
+      if (genero === 'Feminino') {
+        msgBoasVindas.innerText = "Seja bem-vinda!";
+        textoBoasVindas.innerHTML = `O seu perfil foi configurado com sucesso. É um prazer imenso ter-lhe connosco nesta jornada de dedicação e excelência rumo à medicina. Prepare-se para elevar o seu nível de estudos!`;
+      } else {
+        msgBoasVindas.innerText = "Seja bem-vindo!";
+        textoBoasVindas.innerHTML = `O seu perfil foi configurado com sucesso. É um prazer imenso tê-lo connosco nesta jornada de dedicação e excelência rumo à medicina. Prepare-se para elevar o seu nível de estudos!`;
+      }
+
+      document.getElementById('modal-boas-vindas').classList.remove('hidden');
+    }
+
+    function fecharBoasVindas() {
+      document.getElementById('modal-boas-vindas').classList.add('hidden');
+      iniciarPlataforma();
+    }
+
+    function verificarCadastroCompleto(user) {
+      const dadosSalvos = localStorage.getItem('apex_user_dados_' + user.uid);
+      if (dadosSalvos) {
+        document.getElementById('modal-auth').classList.add('hidden');
+        iniciarPlataforma();
+      } else {
+        document.getElementById('modal-auth').classList.remove('hidden');
+        document.getElementById('auth-step-social').classList.add('hidden');
+        document.getElementById('auth-step-dados').classList.remove('hidden');
+      }
+    }
+
+    function iniciarPlataforma() {
+      atualizarGamificacao();
+      carregarSumario();
+    }
+
+    function logoutUsuario() {
+      auth.signOut().then(() => {
+        location.reload();
+      });
+    }
 
     function tentarAcederAdmin() {
       cliquesLogo++;
@@ -300,22 +502,17 @@
       ['dashboard', 'aulas', 'erros', 'gerador'].forEach(id => {
         const el = document.getElementById(`tab-${id}`);
         if (el) el.classList.add('hidden');
-        
         const nav = document.getElementById(`nav-${id}`);
-        if (nav) {
-          nav.className = "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-apex-300 hover:bg-apex-card flex items-center gap-1.5";
-        }
+        if (nav) nav.className = "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-apex-300 hover:bg-apex-card flex items-center gap-1.5";
       });
 
       const targetTab = document.getElementById(`tab-${abaId}`);
       if (targetTab) targetTab.classList.remove('hidden');
 
       const targetNav = document.getElementById(`nav-${abaId}`);
-      if (targetNav) {
-        targetNav.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-apex-500 text-apex-950 flex items-center gap-1.5 shadow";
-      }
+      if (targetNav) targetNav.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-apex-500 text-apex-950 flex items-center gap-1.5 shadow";
 
-      if (abaId === 'erros') renderizarErros();
+      if (abaId === 'erros') renderizarPastasErros();
       if (abaId === 'aulas') voltarParaDisciplinas();
     }
 
@@ -325,11 +522,9 @@
         if (!res.ok) throw new Error("Sumário padrão não encontrado");
         catalogoGlobal = await res.json();
       } catch (err) {
-        console.warn("Aviso sumário:", err.message);
         catalogoGlobal = [];
       }
 
-      // Adicionar módulos personalizados criados via IA numa categoria própria ou juntar
       if (modulosCustomizados.length > 0) {
         let catCustom = catalogoGlobal.find(c => c.disciplina === "Gerados por IA");
         if (!catCustom) {
@@ -360,7 +555,6 @@
         card.className = "bg-apex-surface rounded-2xl border border-apex-border overflow-hidden shadow-xl hover:border-apex-400/50 transition-all cursor-pointer flex flex-col group";
         card.onclick = () => abrirDisciplina(index);
 
-        // ÁREA DA IMAGEM DE DESIGN (Espaço genérico preparado para receber imagens/ilustrações)
         card.innerHTML = `
           <div class="h-36 bg-apex-900 border-b border-apex-border relative flex items-center justify-center overflow-hidden group-hover:scale-[1.02] transition-transform">
             ${disc.imagem ? `<img src="${disc.imagem}" alt="${disc.disciplina}" class="w-full h-full object-cover">` : `
@@ -377,7 +571,7 @@
           <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
             <div>
               <h3 class="font-bold text-base text-apex-50 group-hover:text-apex-300 transition-colors">${disc.disciplina}</h3>
-              <p class="text-xs text-apex-300 mt-1">Explorar tópicos, balões de leitura e casos clínicos desta matéria.</p>
+              <p class="text-xs text-apex-300 mt-1">Explorar tópicos e balões de leitura desta matéria.</p>
             </div>
             <div class="flex items-center text-xs font-semibold text-apex-400 gap-1 pt-2 border-t border-apex-border">
               <span>Aceder aos Tópicos</span> ➔
@@ -434,7 +628,6 @@
     async function carregarAula(nomeArquivo, nomeDisc, nomeMod) {
       if (!nomeArquivo) return;
       document.getElementById('active-balloon-container').classList.add('hidden');
-      
       document.getElementById('breadcrumb-aula').innerText = `${nomeDisc} ➔ ${nomeMod}`;
 
       try {
@@ -447,6 +640,8 @@
           aulaDados = await resposta.json();
         }
 
+        aulaDados.baloes.forEach(b => b.disciplina = nomeDisc);
+
         document.getElementById('lesson-title').innerText = aulaDados.titulo || nomeMod;
         document.getElementById('lesson-desc').innerText = aulaDados.descricao || "";
         
@@ -457,12 +652,10 @@
         }
 
         renderizarBaloes();
-
         document.getElementById('view-modulos').classList.add('hidden');
         document.getElementById('view-sala-aula').classList.remove('hidden');
-
       } catch (erro) {
-        alert("Erro ao carregar o ficheiro do módulo: " + erro.message);
+        alert("Erro ao carregar o módulo: " + erro.message);
       }
     }
 
@@ -520,7 +713,6 @@
 
     function validarRespostaBalao() {
       if (!balaoAtual) return;
-
       const selected = document.querySelector('input[name="balloon_option"]:checked');
       const feedback = document.getElementById('balloon-feedback');
 
@@ -544,7 +736,7 @@
       } else {
         feedback.className = "p-4 rounded-xl text-xs md:text-sm bg-apex-900 border border-red-500/50 text-red-300 shadow-lg space-y-2";
         feedback.innerHTML = `
-          <p class="font-bold text-sm text-red-400">⚠️️ Hipótese Incorreta (Enviado ao Caderno de Erros).</p>
+          <p class="font-bold text-sm text-red-400">⚠️ Hipótese Incorreta (Enviado ao Caderno de Erros / Flashcards).</p>
           <p class="text-apex-100">${balaoAtual.gabarito_comentado || "Reveja os fundamentos clínicos e tente novamente."}</p>
         `;
         if (!errosSalvos.some(e => e.pergunta === balaoAtual.pergunta)) {
@@ -553,39 +745,106 @@
           atualizarGamificacao();
         }
       }
-
       feedback.classList.remove('hidden');
     }
 
-    function renderizarErros() {
-      const container = document.getElementById('erros-list');
-      container.innerHTML = "";
+    // ================= FLASHCARDS / CADERNO DE ERROS =================
+    function renderizarPastasErros() {
+      const containerPastas = document.getElementById('grid-pastas-erros');
+      document.getElementById('erros-pastas-view').classList.remove('hidden');
+      document.getElementById('flashcard-study-view').classList.add('hidden');
+      containerPastas.innerHTML = "";
 
       if (errosSalvos.length === 0) {
-        container.innerHTML = `<p class="text-sm text-apex-300 text-center py-10 bg-apex-surface rounded-2xl border border-apex-border">Nenhum erro registado. Excelente desempenho clínico!</p>`;
+        containerPastas.innerHTML = `<p class="text-sm text-apex-300 col-span-full text-center py-10 bg-apex-surface rounded-2xl border border-apex-border">Nenhum erro registado. Excelente desempenho clínico!</p>`;
         return;
       }
 
-      errosSalvos.forEach((erro, i) => {
-        const div = document.createElement('div');
-        div.className = "bg-apex-surface p-5 rounded-2xl border border-red-500/30 space-y-3 shadow-lg";
-        div.innerHTML = `
-          <div class="flex justify-between items-center">
-            <span class="text-xs px-2.5 py-1 rounded-full bg-red-500/20 text-red-300 font-semibold border border-red-500/30">Revisão de Erro</span>
-            <button onclick="removerErro(${i})" class="text-xs text-apex-300 hover:text-apex-100">Marcar como Dominado ✓</button>
+      const pastas = {};
+      errosSalvos.forEach(err => {
+        const disc = err.disciplina || "Geral / Outros";
+        if (!pastas[disc]) pastas[disc] = [];
+        pastas[disc].push(err);
+      });
+
+      Object.keys(pastas).forEach(disc => {
+        const qtd = pastas[disc].length;
+        const card = document.createElement('div');
+        card.className = "bg-apex-surface p-5 rounded-2xl border border-apex-border hover:border-apex-400/40 transition-all cursor-pointer shadow-lg flex items-center justify-between";
+        card.onclick = () => iniciarEstudoPasta(disc, pastas[disc]);
+        card.innerHTML = `
+          <div class="space-y-1">
+            <span class="text-xs px-2 py-0.5 rounded-full bg-apex-400/10 text-apex-300 font-semibold border border-apex-300/20">Pasta de Disciplina</span>
+            <h4 class="font-bold text-base text-apex-50">${disc}</h4>
+            <p class="text-xs text-apex-300">${qtd} flashcard(s) pendente(s)</p>
           </div>
-          <p class="font-semibold text-apex-100 text-sm md:text-base">${erro.pergunta}</p>
-          <p class="text-xs text-apex-300 bg-apex-900 p-3 rounded-xl border border-apex-border">${erro.gabarito_comentado || 'Sem justificativa adicional.'}</p>
+          <div class="p-3 bg-apex-900 border border-apex-border rounded-xl text-apex-300 font-bold">📂 ➔</div>
         `;
-        container.appendChild(div);
+        containerPastas.appendChild(card);
       });
     }
 
-    function removerErro(index) {
-      errosSalvos.splice(index, 1);
-      localStorage.setItem('apex_erros', JSON.stringify(errosSalvos));
-      atualizarGamificacao();
-      renderizarErros();
+    function iniciarEstudoPasta(nomeDisciplina, listaCards) {
+      flashcardsAtivos = listaCards;
+      indexCardAtual = 0;
+      modoFlashcardAtual = 'pasta';
+      document.getElementById('fc-modo').innerText = `Pasta: ${nomeDisciplina}`;
+      carregarFlashcardAtual();
+    }
+
+    function iniciarBaralhoAleatorio() {
+      if (errosSalvos.length === 0) {
+        alert("O seu caderno de erros está vazio no momento.");
+        return;
+      }
+      flashcardsAtivos = [...errosSalvos].sort(() => Math.random() - 0.5);
+      indexCardAtual = 0;
+      modoFlashcardAtual = 'aleatorio';
+      document.getElementById('fc-modo').innerText = "🔀 Baralho Aleatório Geral";
+      carregarFlashcardAtual();
+    }
+
+    function carregarFlashcardAtual() {
+      if (flashcardsAtivos.length === 0 || indexCardAtual >= flashcardsAtivos.length) {
+        alert("Parabéns! Concluiu todos os flashcards desta sessão.");
+        renderizarPastasErros();
+        return;
+      }
+
+      document.getElementById('erros-pastas-view').classList.add('hidden');
+      document.getElementById('flashcard-study-view').classList.remove('hidden');
+
+      const card = flashcardsAtivos[indexCardAtual];
+      document.getElementById('flashcard-counter').innerText = `Card ${indexCardAtual + 1} de ${flashcardsAtivos.length}`;
+      document.getElementById('fc-disciplina').innerText = card.disciplina || "Geral";
+      document.getElementById('fc-pergunta').innerText = card.pergunta;
+      document.getElementById('fc-resposta-texto').innerText = card.gabarito_comentado || "Sem comentário adicional.";
+
+      document.getElementById('fc-resposta-container').classList.add('hidden');
+      document.getElementById('btn-revelar-fc').classList.remove('hidden');
+      document.getElementById('fc-botoes-feedback').classList.add('hidden');
+    }
+
+    function revelarRespostaFlashcard() {
+      document.getElementById('fc-resposta-container').classList.remove('hidden');
+      document.getElementById('btn-revelar-fc').classList.add('hidden');
+      document.getElementById('fc-botoes-feedback').classList.remove('hidden');
+    }
+
+    function responderFlashcard(dominado) {
+      if (dominado) {
+        const cardAtual = flashcardsAtivos[indexCardAtual];
+        errosSalvos = errosSalvos.filter(e => e.pergunta !== cardAtual.pergunta);
+        localStorage.setItem('apex_erros', JSON.stringify(errosSalvos));
+        xpAtual += 10;
+        atualizarGamificacao();
+      }
+      indexCardAtual++;
+      carregarFlashcardAtual();
+    }
+
+    function voltarParaPastasErros() {
+      renderizarPastasErros();
     }
 
     function gerarModuloInstantaneo() {
@@ -620,17 +879,12 @@
 
       modulosCustomizados.push(novoModulo);
       localStorage.setItem('apex_modulos_custom', JSON.stringify(modulosCustomizados));
-      
       alert("Módulo gerado com sucesso! Já está disponível na aba Aulas.");
       document.getElementById('gen-titulo').value = "";
       document.getElementById('gen-texto').value = "";
       mudarAba('aulas');
       carregarSumario();
     }
-
-    // Inicialização
-    atualizarGamificacao();
-    carregarSumario();
   </script>
 </body>
 </html>
